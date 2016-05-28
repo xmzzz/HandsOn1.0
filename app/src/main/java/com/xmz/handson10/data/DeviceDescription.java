@@ -1,0 +1,38 @@
+package com.xmz.handson10.data;
+
+import android.util.Log;
+
+/**
+ * Created by xmz on 2016/5/26.
+ */
+public class DeviceDescription {
+
+    private String mTypeId;                // 设备类型编号
+
+    private String mTypeName;           // 设备类型名
+
+    private String mDeviceName;         // 设备类型名 用于显示在用户界面
+
+    private int mFuncCount;          // 该设备有几种功能
+
+    private String[] mFuncName;         // 每种功能对用户显示的名称
+
+    private int mDevicePicSrcId;        // 设备的图片ID
+
+    private String mTypeFeatureId;         // 设备的特征编号，如事件类型设备(按钮、感应器）、动作类型设备（灯、马达）
+
+    public DeviceDescription(String typeId, String typeName, String deviceName,
+                             int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
+        mTypeId = typeId;
+        mTypeName = typeName;
+        mDeviceName = deviceName;
+        mFuncCount = funcCount;
+        mFuncName = funcName;
+        mDevicePicSrcId = devicePicSrcId;
+        mTypeFeatureId = typeFeatureId;
+    }
+
+    public void play(int funcIndex) {
+        Log.d("play", "funcIndex");
+    }
+}
