@@ -35,4 +35,60 @@ public class DeviceDescription {
     public void play(int funcIndex) {
         Log.d("play", "funcIndex");
     }
+
+    public String getTypeId() {
+        return mTypeId;
+    }
+
+    public void setTypeId(String typeId) {
+        mTypeId = typeId;
+    }
+
+    public String getTypeName() {
+        return mTypeName;
+    }
+
+    public void setTypeName(String typeName) {
+        mTypeName = typeName;
+    }
+
+    public String getDeviceName() {
+        return mDeviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        mDeviceName = deviceName;
+    }
+
+    public int getFuncCount() {
+        return mFuncCount;
+    }
+
+    public void setFuncCount(int funcCount) {
+        mFuncCount = funcCount;
+    }
+
+    public String[] getFuncName() {
+        return mFuncName;
+    }
+
+    public void setFuncName(String[] funcName) {
+        mFuncName = funcName;
+    }
+
+    public int getDevicePicSrcId() {
+        return mDevicePicSrcId;
+    }
+
+    public void setDevicePicSrcId(int devicePicSrcId) {
+        mDevicePicSrcId = devicePicSrcId;
+    }
+
+    public String getTypeFeatureId() {
+        return mTypeFeatureId;
+    }
+
+    public void setTypeFeatureId(String typeFeatureId) {
+        mTypeFeatureId = typeFeatureId;
+    }
 }

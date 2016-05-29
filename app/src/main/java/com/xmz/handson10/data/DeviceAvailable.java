@@ -9,39 +9,39 @@ package com.xmz.handson10.data;
 */
 public class DeviceAvailable {
 
-    private int mDeviceId;              // 该设备的唯一编号
+    private String mDeviceId;              // 该设备的唯一编号
 
-    private int mTypeId;                // 该设备的类型编号，如：灯，马达，按钮，
+    private String mTypeId;                // 该设备的类型编号，如：灯，马达，按钮，
 
-    private int mTypeFeatureId;         // 设备的特征编号，如：事件类型设备（按钮、感应器）、动作类型设备（灯、马达）
+    private String mTypeFeatureId;         // 设备的特征编号，如：事件类型设备（按钮、感应器）、动作类型设备（灯、马达）
 
-    public DeviceAvailable(int deviceId, int typeId, int typeFeatureId) {
+    public DeviceAvailable(String deviceId, String typeId, String typeFeatureId) {
         mDeviceId = deviceId;
         mTypeId = typeId;
         mTypeFeatureId = typeFeatureId;
     }
 
-    public int getDeviceId() {
+    public String getDeviceId() {
         return mDeviceId;
     }
 
-    public void setDeviceId(int deviceId) {
+    public void setDeviceId(String deviceId) {
         mDeviceId = deviceId;
     }
 
-    public int getTypeId() {
+    public String getTypeId() {
         return mTypeId;
     }
 
-    public void setTypeId(int typeId) {
+    public void setTypeId(String typeId) {
         mTypeId = typeId;
     }
 
-    public int getTypeFeatureId() {
+    public String getTypeFeatureId() {
         return mTypeFeatureId;
     }
 
-    public void setTypeFeatureId(int typeFeatureId) {
+    public void setTypeFeatureId(String typeFeatureId) {
         mTypeFeatureId = typeFeatureId;
     }
 }

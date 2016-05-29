@@ -1,5 +1,6 @@
 package com.xmz.handson10.data.source.devicedescription;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,7 @@ import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
 import com.xmz.handson10.data.source.DbHelper;
 import com.xmz.handson10.data.source.DeviceDescriptionSource;
+import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceAvailableEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceDescriptionEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceFunctionEntry;
 
@@ -158,41 +160,142 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
 
     @Override
     public void saveDeviceDescription(DeviceDescription deviceDescription) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID, deviceDescription.getTypeId());
+        values.put(DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME, deviceDescription.getTypeName());
+        values.put(DeviceDescriptionEntry.COLUMN_NAME_DEVICE_NAME, deviceDescription.getDeviceName());
+        values.put(DeviceDescriptionEntry.COLUMN_NAME_FUNCTION_COUNT, deviceDescription.getFuncCount());
+        values.put(DeviceDescriptionEntry.COLUMN_NAME_PIC_ID, deviceDescription.getDevicePicSrcId());
+        values.put(DeviceDescriptionEntry.COLUMN_NAME_FEATURE_ID, deviceDescription.getTypeFeatureId());
+
+        db.insert(DeviceDescriptionEntry.TABLE_NAME, null, values);
+
+        ContentValues values_func = new ContentValues();
+        int funcCount = deviceDescription.getFuncCount();
+        for (int i=0; i<funcCount; i++) {
+            values_func.put(DeviceFunctionEntry.COLUMN_NAME_TYPE_ID, deviceDescription.getTypeId());
+            values_func.put(DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID, i);
+            values_func.put(DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME, deviceDescription.getFuncName()[i]);
+        }
+        db.insert(DeviceFunctionEntry.TABLE_NAME, null, values_func);
+        db.close();
     }
 
     @Override
     public void deleteAllDeviceDescription() {
-
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(DeviceDescriptionEntry.TABLE_NAME, null, null);
+        db.delete(DeviceFunctionEntry.TABLE_NAME, null, null);
+        db.close();
     }
 
     @Override
     public void deleteDeviceDescription(String typeId) {
-
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String selection = DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID + " LIKE ?";
+        String[] selectionArgs = { typeId };
+        db.delete(DeviceDescriptionEntry.TABLE_NAME, selection, selectionArgs);
+        db.delete(DeviceFunctionEntry.TABLE_NAME, selection, selectionArgs);
     }
 
     @Override
     public void getAvailableDevices(LoadAvailableDevicesCallback callback) {
+        List<DeviceAvailable>  deviceAvailables = new ArrayList<DeviceAvailable>();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
+        String[] projection = {
+                DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID,
+                DeviceAvailableEntry.COLUMN_NAME_TYPE_ID,
+                DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID
+        };
+
+        Cursor c = db.query(
+                DeviceAvailableEntry.TABLE_NAME, projection, null, null, null, null, null);
+
+        if (c != null && c.getCount()>0) {
+            while (c.moveToNext()) {
+                String deviceId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID));
+                String typeId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID));
+                String featureId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID));
+                DeviceAvailable deviceAvailable = new DeviceAvailable(deviceId, typeId, featureId);
+                deviceAvailables.add(deviceAvailable);
+            }
+        }
+
+        if (c != null) {
+            c.close();
+        }
+        db.close();
+        if (deviceAvailables.isEmpty()) {
+            callback.onDataNotAvailable();
+        } else {
+            callback.onAvailableDevicesLoaded(deviceAvailables);
+        }
     }
 
     @Override
     public void getAvailableDevice(String deviceId, GetAvailableDeviceCallback callback) {
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
+        String[] projection = {
+                DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID,
+                DeviceAvailableEntry.COLUMN_NAME_TYPE_ID,
+                DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID
+        };
+
+        String selection = DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID + " LIKE ?";
+        String[] selectionArgs = { deviceId };
+
+        Cursor c = db.query(DeviceAvailableEntry.TABLE_NAME, projection, selection, selectionArgs,
+                null, null, null);
+        DeviceAvailable deviceAvailable = null;
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToLast();
+            String mDeviceId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID));
+            String typeId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID));
+            String featureId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID));
+            deviceAvailable = new DeviceAvailable(mDeviceId, typeId, featureId);
+        }
+        if (c != null) {
+            c.close();
+        }
+        db.close();
+        if (deviceAvailable != null) {
+            callback.onAvailableDeviceLoaded(deviceAvailable);
+        } else {
+            callback.onDataNotAvailable();
+        }
     }
 
     @Override
     public void saveDeviceAvailable(DeviceAvailable deviceAvailable) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID, deviceAvailable.getDeviceId());
+        values.put(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID, deviceAvailable.getTypeId());
+        values.put(DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID, deviceAvailable.getTypeFeatureId());
+
+        db.insert(DeviceAvailableEntry.TABLE_NAME, null , values);
+        db.close();
     }
 
     @Override
     public void deleteAllAvailableDevice() {
-
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(DeviceAvailableEntry.TABLE_NAME, null, null);
+        db.close();
     }
 
     @Override
     public void deleteAvailableDevice(String deviceId) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
+        String selection = DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID + " LIKE ?";
+        String[] selectionArgs = { deviceId };
+        db.delete(DeviceAvailableEntry.TABLE_NAME, selection, selectionArgs);
     }
 }
