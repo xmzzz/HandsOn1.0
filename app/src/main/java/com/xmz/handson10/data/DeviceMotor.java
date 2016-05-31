@@ -11,7 +11,7 @@ public class DeviceMotor extends DeviceDescription {
 
     public static final int ANTI_CLOCKWISE = 2;     // 马达 逆时针转
 
-    public DeviceMotor(String typeId, String typeName, String deviceName, String funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
+    public DeviceMotor(String typeId, String typeName, String deviceName, int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
         super(typeId, typeName, deviceName, funcCount, funcName, devicePicSrcId, typeFeatureId);
     }
 

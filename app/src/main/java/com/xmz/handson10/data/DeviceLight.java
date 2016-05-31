@@ -14,7 +14,7 @@ public class DeviceLight extends DeviceDescription {
     public static final int FLASH = 3;          // 灯 闪烁
 
     public DeviceLight(String typeId, String typeName, String deviceName,
-                       String funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
+                       int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
         super(typeId, typeName, deviceName, funcCount, funcName, devicePicSrcId, typeFeatureId);
     }
 

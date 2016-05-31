@@ -76,7 +76,7 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
                         DeviceFunctionEntry.TABLE_NAME, projectionFunc, selection, selectionArgs, null, null, null);
                 if (c_func != null && c_func.getCount()>0) {
                     int i=0;
-                    while (c.moveToNext()) {
+                    while (c_func.moveToNext()) {
                         funcName[i] = c_func.getString(c_func.getColumnIndexOrThrow(DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME));
                         i++;
                     }
