@@ -31,8 +31,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     DeviceSocketEntry.COLUMN_NAME_SOCKET_ID + TEXT_TYPE + " PRIMARY KEY," +
                     DeviceSocketEntry.COLUMN_NAME_PIC_ID + INT_TYPE + COMMA_SEP +
                     DeviceSocketEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
-                    DeviceSocketEntry.COLUMN_NAME_X + REAL_TYPE + " DEFAULT -1" + COMMA_SEP +
-                    DeviceSocketEntry.COLUMN_NAME_Y + REAL_TYPE + " DEFAULT -1" + COMMA_SEP +
+                    DeviceSocketEntry.COLUMN_NAME_X + INT_TYPE + " DEFAULT -1" + COMMA_SEP +
+                    DeviceSocketEntry.COLUMN_NAME_Y + INT_TYPE + " DEFAULT -1" + COMMA_SEP +
                     DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID + TEXT_TYPE + " DEFAULT -1" +
                     " )";
 

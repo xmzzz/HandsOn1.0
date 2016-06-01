@@ -32,14 +32,22 @@ public interface DeviceConnectContract {
 
         void loadDeviceSockets();
 
+        void loadDeviceSocket(String socketId);
+
+        void moveDeviceSocket(String socketId, int x, int y);
+
+        void updateDeviceSocket(DeviceSocket deviceSocket);
+
+        void createDeviceSocket(DeviceSocket deviceSocket);
+
         void loadAvailableDevices();
 
         void loadDeviceDescription();
 
         void saveDeviceSocket(DeviceSocket deviceSocket);
 
-        void connnectDevice();
+        void connectDevice(String deviceId);
 
-        void disConnectDevice(DeviceSocket deviceSocket);
+        void disConnectDevice(String socketId);
     }
 }

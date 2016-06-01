@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.xmz.handson10.data.DeviceSocket;
 import com.xmz.handson10.data.source.DbHelper;
@@ -133,6 +134,27 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
 
         db.insert(DeviceSocketEntry.TABLE_NAME, null, values);
 
+        db.close();
+    }
+
+    @Override
+    public void updateDeviceSocket(DeviceSocket deviceSocket) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String selectionArg = deviceSocket.getSocketId();
+
+        String selection = DeviceSocketEntry.COLUMN_NAME_SOCKET_ID + " LIKE ?";
+        String[] selectionArgs = { selectionArg };
+
+        ContentValues values = new ContentValues();
+        values.put(DeviceSocketEntry.COLUMN_NAME_SOCKET_ID, deviceSocket.getSocketId());
+        values.put(DeviceSocketEntry.COLUMN_NAME_PIC_ID, deviceSocket.getPicSrcId());
+        values.put(DeviceSocketEntry.COLUMN_NAME_TYPE, deviceSocket.getType());
+        Log.d("update", String.valueOf(deviceSocket.getCoordinate_x()) + "   " + String.valueOf(deviceSocket.getCoordinate_y()));
+        values.put(DeviceSocketEntry.COLUMN_NAME_X, deviceSocket.getCoordinate_x());
+        values.put(DeviceSocketEntry.COLUMN_NAME_Y, deviceSocket.getCoordinate_y());
+        values.put(DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID, deviceSocket.getConnectedDeviceId());
+
+        db.update(DeviceSocketEntry.TABLE_NAME, values, selection, selectionArgs);
         db.close();
     }
 

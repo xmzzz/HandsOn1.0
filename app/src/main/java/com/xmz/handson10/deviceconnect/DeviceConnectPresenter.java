@@ -14,13 +14,16 @@ import java.util.List;
 /**
  * Created by xmz on 2016/5/30.
  */
-public class DeviceConnectPresenter implements DeviceConnectContract.Presenter {
+public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
+        DeviceSocketLocalSource.GetSocketCallback {
 
     private final DeviceDescriptionLocalSource mDeviceDescriptionLocalSource;
 
     private final DeviceSocketLocalSource mDeviceSocketLocalSource;
 
     private final DeviceConnectContract.View mDeviceConnectView;
+
+    private DeviceSocket mDeviceSocket;
 
     public DeviceConnectPresenter(DeviceDescriptionLocalSource deviceDescriptionLocalSource,
                                   DeviceSocketLocalSource deviceSocketLocalSource,
@@ -94,6 +97,11 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter {
         });
     }
 
+    @Override
+    public void loadDeviceSocket(String socketId) {
+        mDeviceSocketLocalSource.getDeviceSocket(socketId, this);
+    }
+
     private void processDeviceDescriptions(List<DeviceDescription> deviceDescriptions) {
         mDeviceConnectView.showDeviceDescriptions(deviceDescriptions);
 
@@ -114,12 +122,41 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter {
     }
 
     @Override
-    public void connnectDevice() {
+    public void connectDevice(String deviceId) {
 
     }
 
     @Override
-    public void disConnectDevice(DeviceSocket deviceSocket) {
+    public void disConnectDevice(String socketId) {
+
+    }
+
+    @Override
+    public void moveDeviceSocket(String socketId, int x, int y) {
+        loadDeviceSocket(socketId);
+        mDeviceSocket.setCoordinate_x(x);
+        mDeviceSocket.setCoordinate_y(y);
+        updateDeviceSocket(mDeviceSocket);
+        loadDeviceSockets();
+    }
+
+    @Override
+    public void onSocketLoaded(DeviceSocket deviceSocket) {
+        mDeviceSocket = deviceSocket;
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+
+    }
+
+    @Override
+    public void updateDeviceSocket(DeviceSocket deviceSocket) {
+        mDeviceSocketLocalSource.updateDeviceSocket(deviceSocket);
+    }
+
+    @Override
+    public void createDeviceSocket(DeviceSocket deviceSocket) {
 
     }
 }

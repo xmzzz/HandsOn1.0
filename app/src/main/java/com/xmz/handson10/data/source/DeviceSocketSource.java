@@ -29,6 +29,8 @@ public interface DeviceSocketSource {
 
     void saveDeviceSocket(DeviceSocket deviceSocket);
 
+    void updateDeviceSocket(DeviceSocket deviceSocket);
+
     void deleteAllSockets();
 
     void deleteDeviceSocket(String deviceSocketId);

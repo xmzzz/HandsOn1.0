@@ -11,9 +11,9 @@ public class DeviceSocket {
 
     private String mType;                   // 该接口的类型
 
-    private float mCoordinate_x;            // 用于用户显示，x坐标
+    private int mCoordinate_x;            // 用于用户显示，x坐标
 
-    private float mCoordinate_y;            // 用于用户显示，y坐标
+    private int mCoordinate_y;            // 用于用户显示，y坐标
 
     private String mConnectedDeviceId;         // 该接口连接的设备编号，无连接则为 -1
 
@@ -34,7 +34,7 @@ public class DeviceSocket {
         mConnectedDeviceId = connectedDeviceId;
     }
 
-    public DeviceSocket(String socketId, int picSrcId, String type, float coordinate_x, float coordinate_y, String connectedDeviceId) {
+    public DeviceSocket(String socketId, int picSrcId, String type, int coordinate_x, int coordinate_y, String connectedDeviceId) {
         mSocketId = socketId;
         mPicSrcId = picSrcId;
         mType = type;
@@ -43,7 +43,7 @@ public class DeviceSocket {
         mConnectedDeviceId = connectedDeviceId;
     }
 
-    public DeviceSocket(String socketId, int picSrcId, String type, float coordinate_x, float coordinate_y) {
+    public DeviceSocket(String socketId, int picSrcId, String type, int coordinate_x, int coordinate_y) {
         mSocketId = socketId;
         mPicSrcId = picSrcId;
         mType = type;
@@ -76,19 +76,19 @@ public class DeviceSocket {
         mType = type;
     }
 
-    public float getCoordinate_x() {
+    public int getCoordinate_x() {
         return mCoordinate_x;
     }
 
-    public void setCoordinate_x(float coordinate_x) {
+    public void setCoordinate_x(int coordinate_x) {
         mCoordinate_x = coordinate_x;
     }
 
-    public float getCoordinate_y() {
+    public int getCoordinate_y() {
         return mCoordinate_y;
     }
 
-    public void setCoordinate_y(float coordinate_y) {
+    public void setCoordinate_y(int coordinate_y) {
         mCoordinate_y = coordinate_y;
     }
 
