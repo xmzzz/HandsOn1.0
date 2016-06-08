@@ -8,6 +8,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xmz.handson10.R;
@@ -40,13 +40,21 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
 
     private FrameLayout mFrameLayout;
 
-    private RelativeLayout mContentRL;
+    private FrameLayout mContentFL;
 
     private FloatingActionButton fabOpenDrawer;
 
     private int mSocketX;
 
     private int mSocketY;
+
+    private int mConnectedTypeId;
+
+    private String mConnectedTypeFeature;
+
+    private DeviceSocketTouchMoveListener mDeviceSocketTouchMoveListener;
+
+    private DeviceConnectOnDragListener mDeviceConnectOnDragListener;
 
 
 
@@ -83,8 +91,8 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
 
         mNestedScrollView = (NestedScrollView) root.findViewById(R.id.devices_scroll_view);
         mDeviceLL = (LinearLayout) root.findViewById(R.id.devices_linear_layout);
-        mFrameLayout = (FrameLayout) root.findViewById(R.id.contentFrame);
-        mContentRL = (RelativeLayout) root.findViewById(R.id.contentRL);
+//        mFrameLayout = (FrameLayout) root.findViewById(R.id.contentFrame);
+        mContentFL = (FrameLayout) root.findViewById(R.id.contentFL);
 
         fabOpenDrawer =
                 (FloatingActionButton) root.findViewById(R.id.fab_open_drawer);
@@ -94,6 +102,9 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                 showDeviceDescriptionsDrawer();
             }
         });
+
+        mDeviceSocketTouchMoveListener = new DeviceSocketTouchMoveListener();
+        mDeviceConnectOnDragListener = new DeviceConnectOnDragListener();
 
         return root;
     }
@@ -114,30 +125,32 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
 
             int newId = View.generateViewId();
             compLL.setId(newId);
-            compLL.setTag(deviceDescription.getTypeId());
+            compLL.setTag(deviceDescription);
 
+            compLL.setOnTouchListener(new DevicesTouchListener());
+//            compLL.setOnClickListener(new DevicesClickListener());
             mDeviceLL.addView(compLL);
         }
     }
 
     @Override
     public void showDeviceSockets(List<DeviceSocket> deviceSockets) {
-        mContentRL.removeAllViews();
+        mContentFL.removeAllViews();
         for (DeviceSocket deviceSocket : deviceSockets) {
             LinearLayout compLL = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.device_socket_comp, null);
             ImageView socketPic = (ImageView) compLL.getChildAt(0);
             TextView socketTypeName = (TextView) compLL.getChildAt(1);
-            socketPic.setImageResource(deviceSocket.getPicSrcId());
-            socketTypeName.setText(deviceSocket.getSocketId());
+            if (deviceSocket.getConnectedDeviceId() == -1) {
+                socketPic.setImageResource(deviceSocket.getOriginalPicSrcId());
+            } else {
+                socketPic.setImageResource(deviceSocket.getPicSrcId());
+            }
+            socketTypeName.setText(String.valueOf(deviceSocket.getSocketId()));
             int x = deviceSocket.getCoordinate_x();
             int y = deviceSocket.getCoordinate_y();
-//            int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-//            int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-//            compLL.measure(w, h);
-//            int width = compLL.getMeasuredWidth();
-//            int height = compLL.getMeasuredHeight();
-            RelativeLayout.LayoutParams layoutParam =
-                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+
+            FrameLayout.LayoutParams layoutParam =
+                    new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParam.leftMargin = x;
             layoutParam.topMargin = y;
@@ -145,25 +158,50 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
 
             int newId = View.generateViewId();
             compLL.setId(newId);
-            compLL.setTag(deviceSocket.getSocketId());
+            compLL.setTag(deviceSocket);
 
-            compLL.setOnTouchListener(new DeviceSocketTouchMoveListener());
+            compLL.setOnTouchListener(mDeviceSocketTouchMoveListener);
+            compLL.setOnDragListener(mDeviceConnectOnDragListener);
 
 
-            mContentRL.addView(compLL, layoutParam);
+            mContentFL.addView(compLL, layoutParam);
         }
     }
-    private class DeviceSocketTouchMoveListener implements View.OnTouchListener {
-        RelativeLayout.LayoutParams layoutParams;
-        String socketId;
+    private class DevicesTouchListener implements  View.OnTouchListener {
+        DeviceDescription mDeviceDescription;
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            mDeviceDescription = (DeviceDescription) v.getTag();
+            mConnectedTypeId = mDeviceDescription.getTypeId();
+            mConnectedTypeFeature = mDeviceDescription.getTypeFeatureId();
+            View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
+            v.startDrag(null, myShadow, null, 0);
+
+//            v.startDrag(null, myShadow, null, 0 );
+//            v.setOnDragListener(mDeviceConnectOnDragListener);
+            return true;
+        }
+    }
+
+    private class DevicesClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
+
+    private class DeviceSocketTouchMoveListener implements View.OnTouchListener {
+        FrameLayout.LayoutParams layoutParams;
+        int socketId;
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            socketId = ((DeviceSocket) v.getTag()).getSocketId();
             final int X = (int) event.getRawX();
             final int Y = (int) event.getRawY();
             switch ( event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     layoutParams =
-                            (RelativeLayout.LayoutParams) v.getLayoutParams();
+                            (FrameLayout.LayoutParams) v.getLayoutParams();
                     mSocketX = X - layoutParams.leftMargin;
                     mSocketY = Y - layoutParams.topMargin;
                     break;
@@ -171,8 +209,7 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                     Log.d("TouchEvent",String.valueOf(v.getTag()));
                     Log.d("X Y", String.valueOf(X) + "   " + String.valueOf(Y));
                     Log.e("socketX socketY", String.valueOf(mSocketX) + "    " + String.valueOf(mSocketY));
-                    socketId = (String) v.getTag();
-                    Log.d("socketId", socketId);
+                    Log.d("socketId", String.valueOf(socketId));
                     mDeviceSocketListener.onSocketMove(socketId, X - mSocketX, Y - mSocketY);
                     break;
                 case MotionEvent.ACTION_MOVE:
@@ -183,13 +220,63 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                     v.setLayoutParams(layoutParams);
                     break;
             }
-            mContentRL.invalidate();
+            mContentFL.invalidate();
+            return true;
+        }
+    }
+
+    public class DeviceConnectOnDragListener implements View.OnDragListener {
+        DeviceSocket mDeviceSocket;
+        DeviceDescription mDeviceDescription;
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            mDeviceSocket = (DeviceSocket) v.getTag();
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    mPresenter.loadDeviceSocketsAnimation();
+                    Log.d("onDrag","start");
+                    closeDeviceDescriptionsDrawer();
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    mPresenter.loadDeviceSockets();
+                    Log.d("ended", String.valueOf(mDeviceSocket.getSocketId()));
+                    break;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    Log.d("location", String.valueOf(mDeviceSocket.getSocketId()));
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    Log.d("exited", String.valueOf(mDeviceSocket.getSocketId()));
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    Log.d("entered", String.valueOf(mDeviceSocket.getSocketId()));
+                    break;
+                case DragEvent.ACTION_DROP:
+                    mPresenter.connectDevice(mDeviceSocket.getSocketId(), mConnectedTypeId, mConnectedTypeFeature);
+                    break;
+
+            }
             return true;
         }
     }
 
     @Override
     public void showAvailableDevices(List<DeviceAvailable> availableDevices) {
+
+    }
+
+    @Override
+    public void showAvailableSocketsAnimation(List<DeviceSocket> deviceSockets) {
+        Log.d("childCount", String.valueOf(mContentFL.getChildCount()));
+
+        for (int i=0; i<mContentFL.getChildCount(); i++) {
+
+            LinearLayout compLL = (LinearLayout) mContentFL.getChildAt(i);
+            DeviceSocket deviceSocket = (DeviceSocket) compLL.getTag();
+            ImageView socketPic = (ImageView) compLL.getChildAt(0);
+            if (deviceSocket.getConnectedDeviceId() == -1) {
+                socketPic.setImageResource(R.drawable.socket_black);
+            }
+        }
 
     }
 
@@ -203,28 +290,33 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
         mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
+    @Override
+    public void closeDeviceDescriptionsDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
     public interface DeviceSocketListener {
 
-        void onSocketMove(String socketId, int x, int y);
+        void onSocketMove(int socketId, int x, int y);
 
-        void onSocketClick(String socketId);
+        void onSocketClick(int socketId);
 
-        void onSocketShowAvailable(String socketId);
+        void onSocketShowAvailable(int socketId);
     }
 
     DeviceSocketListener mDeviceSocketListener = new DeviceSocketListener() {
         @Override
-        public void onSocketMove(String socketId, int x, int y) {
+        public void onSocketMove(int socketId, int x, int y) {
             mPresenter.moveDeviceSocket(socketId, x, y);
         }
 
         @Override
-        public void onSocketClick(String socketId) {
+        public void onSocketClick(int socketId) {
 
         }
 
         @Override
-        public void onSocketShowAvailable(String socketId) {
+        public void onSocketShowAvailable(int socketId) {
 
         }
     };

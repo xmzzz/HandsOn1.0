@@ -5,7 +5,9 @@ package com.xmz.handson10.data;
  */
 public class DeviceSocket {
 
-    private String mSocketId;                  // 设备接口编号
+    private int mSocketId;                  // 设备接口编号
+
+    private final int mOriginalPicSrcId;
 
     private int mPicSrcId;                  // 该接口的图片
 
@@ -15,48 +17,62 @@ public class DeviceSocket {
 
     private int mCoordinate_y;            // 用于用户显示，y坐标
 
-    private String mConnectedDeviceId;         // 该接口连接的设备编号，无连接则为 -1
+    private int mConnectedDeviceId;         // 该接口连接的设备编号，无连接则为 -1
 
-    public DeviceSocket(String socketId, int picSrcId, String type) {
-        mSocketId = socketId;
+    public DeviceSocket(int picSrcId, String type) {
         mPicSrcId = picSrcId;
+        mOriginalPicSrcId = mPicSrcId;
         mType = type;
-        mConnectedDeviceId = "-1";
+        mConnectedDeviceId = -1;
 
         mCoordinate_x = -1;
         mCoordinate_y = -1;
     }
 
-    public DeviceSocket(String socketId, int picSrcId, String type, String connectedDeviceId) {
+    public DeviceSocket(int socketId, int picSrcId, String type, int coordinate_x, int coordinate_y, int connectedDeviceId) {
         mSocketId = socketId;
         mPicSrcId = picSrcId;
-        mType = type;
-        mConnectedDeviceId = connectedDeviceId;
-    }
-
-    public DeviceSocket(String socketId, int picSrcId, String type, int coordinate_x, int coordinate_y, String connectedDeviceId) {
-        mSocketId = socketId;
-        mPicSrcId = picSrcId;
+        mOriginalPicSrcId = mPicSrcId;
         mType = type;
         mCoordinate_x = coordinate_x;
         mCoordinate_y = coordinate_y;
         mConnectedDeviceId = connectedDeviceId;
     }
 
-    public DeviceSocket(String socketId, int picSrcId, String type, int coordinate_x, int coordinate_y) {
-        mSocketId = socketId;
+    public DeviceSocket(int picSrcId, String type, int connectedDeviceId) {
         mPicSrcId = picSrcId;
+        mOriginalPicSrcId = mPicSrcId;
+        mType = type;
+        mConnectedDeviceId = connectedDeviceId;
+    }
+
+    public DeviceSocket(int picSrcId, String type, int coordinate_x, int coordinate_y, int connectedDeviceId) {
+        mPicSrcId = picSrcId;
+        mOriginalPicSrcId = mPicSrcId;
         mType = type;
         mCoordinate_x = coordinate_x;
         mCoordinate_y = coordinate_y;
-        mConnectedDeviceId = "-1";
+        mConnectedDeviceId = connectedDeviceId;
     }
 
-    public String getSocketId() {
+    public DeviceSocket(int picSrcId, String type, int coordinate_x, int coordinate_y) {
+        mPicSrcId = picSrcId;
+        mOriginalPicSrcId = mPicSrcId;
+        mType = type;
+        mCoordinate_x = coordinate_x;
+        mCoordinate_y = coordinate_y;
+        mConnectedDeviceId = -1;
+    }
+
+    public int getOriginalPicSrcId() {
+        return mOriginalPicSrcId;
+    }
+
+    public int getSocketId() {
         return mSocketId;
     }
 
-    public void setSocketId(String socketId) {
+    public void setSocketId(int socketId) {
         mSocketId = socketId;
     }
 
@@ -92,11 +108,11 @@ public class DeviceSocket {
         mCoordinate_y = coordinate_y;
     }
 
-    public String getConnectedDeviceId() {
+    public int getConnectedDeviceId() {
         return mConnectedDeviceId;
     }
 
-    public void setConnectedDeviceId(String connectedDeviceId) {
+    public void setConnectedDeviceId(int connectedDeviceId) {
         mConnectedDeviceId = connectedDeviceId;
     }
 }

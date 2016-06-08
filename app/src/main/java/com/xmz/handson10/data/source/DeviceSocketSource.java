@@ -25,7 +25,7 @@ public interface DeviceSocketSource {
 
     void getDeviceSockets(LoadSocketsCallback callback);
 
-    void getDeviceSocket(String socketId, GetSocketCallback callback);
+    void getDeviceSocket(int socketId, GetSocketCallback callback);
 
     void saveDeviceSocket(DeviceSocket deviceSocket);
 
@@ -33,5 +33,7 @@ public interface DeviceSocketSource {
 
     void deleteAllSockets();
 
-    void deleteDeviceSocket(String deviceSocketId);
+    void deleteDeviceSocket(int deviceSocketId);
+
+
 }

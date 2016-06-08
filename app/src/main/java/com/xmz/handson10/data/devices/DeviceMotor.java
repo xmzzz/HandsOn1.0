@@ -1,6 +1,8 @@
-package com.xmz.handson10.data;
+package com.xmz.handson10.data.devices;
 
 import android.util.Log;
+
+import com.xmz.handson10.data.DeviceDescription;
 
 /**
  * Created by xmz on 2016/5/26.
@@ -11,8 +13,12 @@ public class DeviceMotor extends DeviceDescription {
 
     public static final int ANTI_CLOCKWISE = 2;     // 马达 逆时针转
 
-    public DeviceMotor(String typeId, String typeName, String deviceName, int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
+    public DeviceMotor(int typeId, String typeName, String deviceName, int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
         super(typeId, typeName, deviceName, funcCount, funcName, devicePicSrcId, typeFeatureId);
+    }
+
+    public DeviceMotor(String typeName, String deviceName, int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
+        super(typeName, deviceName, funcCount, funcName, devicePicSrcId, typeFeatureId);
     }
 
     @Override

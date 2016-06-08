@@ -1,13 +1,12 @@
 package com.xmz.handson10.deviceconnect;
 
-import com.xmz.handson10.R;
+import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
 import com.xmz.handson10.data.DeviceSocket;
 import com.xmz.handson10.data.source.DeviceDescriptionSource;
 import com.xmz.handson10.data.source.DeviceSocketSource;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionLocalSource;
 import com.xmz.handson10.data.source.devicesocket.DeviceSocketLocalSource;
-import com.xmz.handson10.util.IdFactory;
 
 import java.util.List;
 
@@ -15,7 +14,8 @@ import java.util.List;
  * Created by xmz on 2016/5/30.
  */
 public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
-        DeviceSocketLocalSource.GetSocketCallback {
+        DeviceSocketLocalSource.GetSocketCallback, DeviceDescriptionSource.GetAvailableDeviceCallback,
+        DeviceDescriptionSource.GetDeviceDescriptionCallback{
 
     private final DeviceDescriptionLocalSource mDeviceDescriptionLocalSource;
 
@@ -24,6 +24,10 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
     private final DeviceConnectContract.View mDeviceConnectView;
 
     private DeviceSocket mDeviceSocket;
+
+    private DeviceAvailable mDeviceAvailable;
+
+    private DeviceDescription mDeviceDescription;
 
     public DeviceConnectPresenter(DeviceDescriptionLocalSource deviceDescriptionLocalSource,
                                   DeviceSocketLocalSource deviceSocketLocalSource,
@@ -45,25 +49,25 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 
     @Override
     public void initData() {
-        DeviceDescription deviceDescription = new DeviceDescription(
-                IdFactory.LIGHT_TYPE_ID, "LIGHT", "灯泡", 3, new String[]{"灯亮", "灯灭", "灯闪"},
-                R.drawable.light, "ACTION"
-        );
-        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
-        deviceDescription = new DeviceDescription(
-                IdFactory.MOTOR_TYPE_ID, "MOTOR", "马达", 2, new String[]{"顺时针转", "逆时针转"},
-                R.drawable.motor, "ACTION"
-        );
-        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
-
-        DeviceSocket deviceSocket = new DeviceSocket(IdFactory.SOCKET1_ID, R.drawable.socket, null);
-        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
-        deviceSocket = new DeviceSocket(IdFactory.SOCKET2_ID, R.drawable.socket, null);
-        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
-        deviceSocket = new DeviceSocket(IdFactory.SOCKET3_ID, R.drawable.socket, null);
-        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
-        deviceSocket = new DeviceSocket(IdFactory.SOCKET4_ID, R.drawable.socket, null);
-        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
+//        DeviceDescription deviceDescription = new DeviceLight(
+//                "LIGHT", "灯泡", 3, new String[]{"灯亮", "灯灭", "灯闪"},
+//                R.drawable.light, "ACTION"
+//        );
+//        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
+//        deviceDescription = new DeviceMotor(
+//                "MOTOR", "马达", 2, new String[]{"顺时针转", "逆时针转"},
+//                R.drawable.motor, "ACTION"
+//        );
+//        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
+//
+//        DeviceSocket deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
+//        deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
+//        deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
+//        deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
 
     }
 
@@ -98,8 +102,27 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
     }
 
     @Override
-    public void loadDeviceSocket(String socketId) {
+    public void loadDeviceSocket(int socketId) {
         mDeviceSocketLocalSource.getDeviceSocket(socketId, this);
+    }
+
+    @Override
+    public void loadDeviceSocketsAnimation() {
+        mDeviceSocketLocalSource.getDeviceSockets(new DeviceSocketSource.LoadSocketsCallback() {
+            @Override
+            public void onSocketsLoaded(List<DeviceSocket> deviceSockets) {
+                processDeviceSocketsAnimation(deviceSockets);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+        });
+    }
+
+    public void processDeviceSocketsAnimation(List<DeviceSocket> deviceSockets) {
+        mDeviceConnectView.showAvailableSocketsAnimation(deviceSockets);
     }
 
     private void processDeviceDescriptions(List<DeviceDescription> deviceDescriptions) {
@@ -117,22 +140,36 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
     }
 
     @Override
+    public void loadAvailableDevice(int deviceId) {
+        mDeviceDescriptionLocalSource.getAvailableDevice(deviceId, this);
+    }
+
+    @Override
     public void saveDeviceSocket(DeviceSocket deviceSocket) {
 
     }
 
     @Override
-    public void connectDevice(String deviceId) {
+    public void connectDevice(int deviceSocketId, int deviceTypeId, String deviceTypeFeature) {
+        int deviceId;
+        DeviceAvailable mDeviceAvailable = new DeviceAvailable(deviceTypeId, deviceTypeFeature);
+        deviceId = mDeviceDescriptionLocalSource.saveDeviceAvailable(mDeviceAvailable);
+
+        loadDeviceSocket(deviceSocketId);
+        mDeviceDescriptionLocalSource.getDeviceDescription(deviceTypeId, this);
+        mDeviceSocket.setConnectedDeviceId(deviceId);
+        mDeviceSocket.setPicSrcId(mDeviceDescription.getDevicePicSrcId());
+        mDeviceSocketLocalSource.updateDeviceSocket(mDeviceSocket);
 
     }
 
     @Override
-    public void disConnectDevice(String socketId) {
+    public void disConnectDevice(int socketId) {
 
     }
 
     @Override
-    public void moveDeviceSocket(String socketId, int x, int y) {
+    public void moveDeviceSocket(int socketId, int x, int y) {
         loadDeviceSocket(socketId);
         mDeviceSocket.setCoordinate_x(x);
         mDeviceSocket.setCoordinate_y(y);
@@ -148,6 +185,16 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
     @Override
     public void onDataNotAvailable() {
 
+    }
+
+    @Override
+    public void onAvailableDeviceLoaded(DeviceAvailable deviceAvailable) {
+        mDeviceAvailable = deviceAvailable;
+    }
+
+    @Override
+    public void onDeviceDescriptionLoaded(DeviceDescription deviceDescription) {
+        mDeviceDescription = deviceDescription;
     }
 
     @Override

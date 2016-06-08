@@ -6,4 +6,6 @@
 
     <dimen name="device_description_comp">110dp</dimen>
     <dimen name="device_socket_comp">80dp</dimen>
+
+    <dimen name="device_connected_drager">100dp</dimen>
 </resources>

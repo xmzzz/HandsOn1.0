@@ -7,7 +7,7 @@ import android.util.Log;
  */
 public class DeviceDescription {
 
-    private String mTypeId;                // 设备类型编号
+    private int mTypeId;                // 设备类型编号
 
     private String mTypeName;           // 设备类型名
 
@@ -21,8 +21,17 @@ public class DeviceDescription {
 
     private String mTypeFeatureId;         // 设备的特征编号，如事件类型设备(按钮、感应器）、动作类型设备（灯、马达）
 
-    public DeviceDescription(String typeId, String typeName, String deviceName,
+    public DeviceDescription(String typeName, String deviceName,
                              int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
+        mTypeName = typeName;
+        mDeviceName = deviceName;
+        mFuncCount = funcCount;
+        mFuncName = funcName;
+        mDevicePicSrcId = devicePicSrcId;
+        mTypeFeatureId = typeFeatureId;
+    }
+
+    public DeviceDescription(int typeId, String typeName, String deviceName, int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
         mTypeId = typeId;
         mTypeName = typeName;
         mDeviceName = deviceName;
@@ -36,11 +45,11 @@ public class DeviceDescription {
         Log.d("play", "funcIndex");
     }
 
-    public String getTypeId() {
+    public int getTypeId() {
         return mTypeId;
     }
 
-    public void setTypeId(String typeId) {
+    public void setTypeId(int typeId) {
         mTypeId = typeId;
     }
 

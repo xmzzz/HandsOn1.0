@@ -53,12 +53,12 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
 
         if (c != null && c.getCount()>0) {
             while (c.moveToNext()) {
-                String socketId = c.getString(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_SOCKET_ID));
+                int socketId = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_SOCKET_ID));
                 int picId = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_PIC_ID));
                 String socketType = c.getString(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_TYPE));
                 int co_x = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_X));
                 int co_y = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_Y));
-                String connectedId = c.getString(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID));
+                int connectedId = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID));
                 DeviceSocket deviceSocket = new DeviceSocket(socketId, picId, socketType,
                         co_x, co_y, connectedId);
                 deviceSockets.add(deviceSocket);
@@ -77,8 +77,9 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
     }
 
     @Override
-    public void getDeviceSocket(String socketId, GetSocketCallback callback) {
+    public void getDeviceSocket(int socketId, GetSocketCallback callback) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String selectionArg = String.valueOf(socketId);
 
         String[] projection = {
                 DeviceSocketEntry.COLUMN_NAME_SOCKET_ID,
@@ -90,7 +91,7 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
         };
 
         String selection = DeviceSocketEntry.COLUMN_NAME_SOCKET_ID + " LIKE ?";
-        String[] selectionArgs = { socketId };
+        String[] selectionArgs = { selectionArg };
 
         Cursor c = db.query(DeviceSocketEntry.TABLE_NAME, projection, selection, selectionArgs,
                 null, null, null);
@@ -98,12 +99,12 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
 
         if (c != null && c.getCount() > 0 ) {
             c.moveToLast();
-            String mSocketId = c.getString(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_SOCKET_ID));
+            int mSocketId = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_SOCKET_ID));
             int picId = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_PIC_ID));
             String socketType = c.getString(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_TYPE));
             int co_x = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_X));
             int co_y = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_Y));
-            String connectedId = c.getString(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID));
+            int connectedId = c.getInt(c.getColumnIndexOrThrow(DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID));
             deviceSocket = new DeviceSocket(mSocketId, picId, socketType,
                     co_x, co_y, connectedId);
         }
@@ -125,7 +126,6 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DeviceSocketEntry.COLUMN_NAME_SOCKET_ID, deviceSocket.getSocketId());
         values.put(DeviceSocketEntry.COLUMN_NAME_PIC_ID, deviceSocket.getPicSrcId());
         values.put(DeviceSocketEntry.COLUMN_NAME_TYPE, deviceSocket.getType());
         values.put(DeviceSocketEntry.COLUMN_NAME_X, deviceSocket.getCoordinate_x());
@@ -140,7 +140,7 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
     @Override
     public void updateDeviceSocket(DeviceSocket deviceSocket) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String selectionArg = deviceSocket.getSocketId();
+        String selectionArg = String.valueOf(deviceSocket.getSocketId());
 
         String selection = DeviceSocketEntry.COLUMN_NAME_SOCKET_ID + " LIKE ?";
         String[] selectionArgs = { selectionArg };
@@ -166,11 +166,12 @@ public class DeviceSocketLocalSource implements DeviceSocketSource {
     }
 
     @Override
-    public void deleteDeviceSocket(String deviceSocketId) {
+    public void deleteDeviceSocket(int deviceSocketId) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String selectionArg = String.valueOf(deviceSocketId);
 
         String selection = DeviceSocketEntry.COLUMN_NAME_SOCKET_ID + " LIKE ?";
-        String[] selectionArgs = { deviceSocketId };
+        String[] selectionArgs = { selectionArg };
 
         db.delete(DeviceSocketEntry.TABLE_NAME, selection, selectionArgs);
     }

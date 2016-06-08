@@ -51,7 +51,7 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         };
 
         String[] projectionFunc = {
-                DeviceFunctionEntry.COLUMN_NAME_TYPE_ID,
+                DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME,
                 DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID,
                 DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME
         };
@@ -61,15 +61,15 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
 
         if (c != null && c.getCount()>0) {
             while (c.moveToNext()) {
-                String typeId = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID));
+                int typeId = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID));
                 String typeName = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME));
                 String deviceName = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_DEVICE_NAME));
                 int funcCount = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_FUNCTION_COUNT));
                 int picId = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_PIC_ID));
                 String featureId = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_FEATURE_ID));
 
-                String selection = DeviceFunctionEntry.COLUMN_NAME_TYPE_ID + " LIKE ?";
-                String[] selectionArgs = { typeId };
+                String selection = DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME + " LIKE ?";
+                String[] selectionArgs = { typeName };
                 String[] funcName = new String[funcCount];
 
                 Cursor c_func = db.query(
@@ -98,8 +98,9 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
     }
 
     @Override
-    public void getDeviceDescription(String typeId, GetDeviceDescriptionCallback callback) {
+    public void getDeviceDescription(int typeId, GetDeviceDescriptionCallback callback) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String selectionArg = String.valueOf(typeId);
         String[] projection = {
                 DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID,
                 DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME,
@@ -110,28 +111,28 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         };
 
         String[] projectionFunc = {
-                DeviceFunctionEntry.COLUMN_NAME_TYPE_ID,
+                DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME,
                 DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID,
                 DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME
         };
 
         String selection = DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID + " LIKE ?";
-        String[] selectionArgs = { typeId };
+        String[] selectionArgs = { selectionArg };
 
         Cursor c = db.query(DeviceDescriptionEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
         DeviceDescription deviceDescription = null;
 
         if (c != null && c.getCount() > 0) {
             c.moveToLast();
-            String mTypeId = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID));
+            int mTypeId = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID));
             String typeName = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME));
             String deviceName = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_DEVICE_NAME));
             int funcCount = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_FUNCTION_COUNT));
             int picId = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_PIC_ID));
             String featureId = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_FEATURE_ID));
 
-            String selectionFunc = DeviceFunctionEntry.COLUMN_NAME_TYPE_ID + " LIKE ?";
-            String[] selectionArgsFunc = { typeId };
+            String selectionFunc = DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME + " LIKE ?";
+            String[] selectionArgsFunc = { typeName };
             String[] funcName = new String[funcCount];
 
             Cursor c_func = db.query(
@@ -163,7 +164,6 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID, deviceDescription.getTypeId());
         values.put(DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME, deviceDescription.getTypeName());
         values.put(DeviceDescriptionEntry.COLUMN_NAME_DEVICE_NAME, deviceDescription.getDeviceName());
         values.put(DeviceDescriptionEntry.COLUMN_NAME_FUNCTION_COUNT, deviceDescription.getFuncCount());
@@ -175,7 +175,7 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         ContentValues values_func = new ContentValues();
         int funcCount = deviceDescription.getFuncCount();
         for (int i=0; i<funcCount; i++) {
-            values_func.put(DeviceFunctionEntry.COLUMN_NAME_TYPE_ID, deviceDescription.getTypeId());
+            values_func.put(DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME, deviceDescription.getTypeName());
             values_func.put(DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID, i);
             values_func.put(DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME, deviceDescription.getFuncName()[i]);
         }
@@ -216,8 +216,8 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
 
         if (c != null && c.getCount()>0) {
             while (c.moveToNext()) {
-                String deviceId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID));
-                String typeId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID));
+                int deviceId = c.getInt(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID));
+                int typeId = c.getInt(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID));
                 String featureId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID));
                 DeviceAvailable deviceAvailable = new DeviceAvailable(deviceId, typeId, featureId);
                 deviceAvailables.add(deviceAvailable);
@@ -236,8 +236,9 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
     }
 
     @Override
-    public void getAvailableDevice(String deviceId, GetAvailableDeviceCallback callback) {
+    public void getAvailableDevice(int deviceId, GetAvailableDeviceCallback callback) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String selectionArg = String.valueOf(deviceId);
 
         String[] projection = {
                 DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID,
@@ -246,7 +247,7 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         };
 
         String selection = DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID + " LIKE ?";
-        String[] selectionArgs = { deviceId };
+        String[] selectionArgs = { selectionArg };
 
         Cursor c = db.query(DeviceAvailableEntry.TABLE_NAME, projection, selection, selectionArgs,
                 null, null, null);
@@ -254,8 +255,8 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
 
         if (c != null && c.getCount() > 0) {
             c.moveToLast();
-            String mDeviceId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID));
-            String typeId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID));
+            int mDeviceId = c.getInt(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID));
+            int typeId = c.getInt(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID));
             String featureId = c.getString(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID));
             deviceAvailable = new DeviceAvailable(mDeviceId, typeId, featureId);
         }
@@ -270,17 +271,33 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         }
     }
 
+    private int getLastAvailableDeviceId() {
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String[] projection = {
+                DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID,
+                DeviceAvailableEntry.COLUMN_NAME_TYPE_ID,
+                DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID
+        };
+
+        Cursor c = db.query(DeviceAvailableEntry.TABLE_NAME, projection, null, null, null, null, null);
+        c.moveToLast();
+        return c.getInt(c.getColumnIndexOrThrow(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID));
+    }
+
     @Override
-    public void saveDeviceAvailable(DeviceAvailable deviceAvailable) {
+    public int saveDeviceAvailable(DeviceAvailable deviceAvailable) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int deviceId;
 
         ContentValues values = new ContentValues();
-        values.put(DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID, deviceAvailable.getDeviceId());
-        values.put(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID, deviceAvailable.getTypeId());
+        values.put(DeviceAvailableEntry.COLUMN_NAME_TYPE_ID, deviceAvailable.getDeviceTypeId());
         values.put(DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID, deviceAvailable.getTypeFeatureId());
 
         db.insert(DeviceAvailableEntry.TABLE_NAME, null , values);
         db.close();
+
+        deviceId = getLastAvailableDeviceId();
+        return deviceId;
     }
 
     @Override
@@ -291,11 +308,12 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
     }
 
     @Override
-    public void deleteAvailableDevice(String deviceId) {
+    public void deleteAvailableDevice(int deviceId) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String selectionArg = String.valueOf(deviceId);
 
         String selection = DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID + " LIKE ?";
-        String[] selectionArgs = { deviceId };
+        String[] selectionArgs = { selectionArg };
         db.delete(DeviceAvailableEntry.TABLE_NAME, selection, selectionArgs);
     }
 }

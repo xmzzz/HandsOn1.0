@@ -1,6 +1,8 @@
-package com.xmz.handson10.data;
+package com.xmz.handson10.data.devices;
 
 import android.util.Log;
+
+import com.xmz.handson10.data.DeviceDescription;
 
 /**
  * Created by xmz on 2016/5/26.
@@ -13,9 +15,14 @@ public class DeviceLight extends DeviceDescription {
 
     public static final int FLASH = 3;          // 灯 闪烁
 
-    public DeviceLight(String typeId, String typeName, String deviceName,
+    public DeviceLight(int typeId, String typeName, String deviceName,
                        int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
         super(typeId, typeName, deviceName, funcCount, funcName, devicePicSrcId, typeFeatureId);
+    }
+
+    public DeviceLight(String typeName, String deviceName,
+                       int funcCount, String[] funcName, int devicePicSrcId, String typeFeatureId) {
+        super(typeName, deviceName, funcCount, funcName, devicePicSrcId, typeFeatureId);
     }
 
     @Override

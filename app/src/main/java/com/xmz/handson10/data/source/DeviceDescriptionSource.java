@@ -40,7 +40,7 @@ public interface DeviceDescriptionSource {
 
     void getDeviceDescriptions(LoadDeviceDescriptionsCallback callback);
 
-    void getDeviceDescription(String typeId, GetDeviceDescriptionCallback callback);
+    void getDeviceDescription(int typeId, GetDeviceDescriptionCallback callback);
 
     void saveDeviceDescription(DeviceDescription deviceDescription);
 
@@ -50,13 +50,13 @@ public interface DeviceDescriptionSource {
 
     void getAvailableDevices(LoadAvailableDevicesCallback callback);
 
-    void getAvailableDevice(String deviceId, GetAvailableDeviceCallback callback);
+    void getAvailableDevice(int deviceId, GetAvailableDeviceCallback callback);
 
-    void saveDeviceAvailable(DeviceAvailable deviceAvailable);
+    int saveDeviceAvailable(DeviceAvailable deviceAvailable);
 
     void deleteAllAvailableDevice();
 
-    void deleteAvailableDevice(String deviceId);
+    void deleteAvailableDevice(int deviceId);
 
 
 }

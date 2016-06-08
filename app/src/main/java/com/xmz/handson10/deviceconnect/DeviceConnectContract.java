@@ -19,11 +19,15 @@ public interface DeviceConnectContract {
 
         void showAvailableDevices(List<DeviceAvailable> availableDevices);
 
+        void showAvailableSocketsAnimation(List<DeviceSocket> deviceSockets);
+
         void showDeviceDescriptions(List<DeviceDescription> deviceDescriptions);
 
         void showEditControl();
 
         void showDeviceDescriptionsDrawer();
+
+        void closeDeviceDescriptionsDrawer();
     }
 
     interface Presenter extends BasePresenter {
@@ -32,9 +36,11 @@ public interface DeviceConnectContract {
 
         void loadDeviceSockets();
 
-        void loadDeviceSocket(String socketId);
+        void loadDeviceSocketsAnimation();
 
-        void moveDeviceSocket(String socketId, int x, int y);
+        void loadDeviceSocket(int socketId);
+
+        void moveDeviceSocket(int socketId, int x, int y);
 
         void updateDeviceSocket(DeviceSocket deviceSocket);
 
@@ -42,12 +48,14 @@ public interface DeviceConnectContract {
 
         void loadAvailableDevices();
 
+        void loadAvailableDevice(int deviceId);
+
         void loadDeviceDescription();
 
         void saveDeviceSocket(DeviceSocket deviceSocket);
 
-        void connectDevice(String deviceId);
+        void connectDevice(int deviceSocketId, int deviceTypeId, String deviceTypeFeature);
 
-        void disConnectDevice(String socketId);
+        void disConnectDevice(int socketId);
     }
 }

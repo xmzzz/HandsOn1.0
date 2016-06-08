@@ -28,18 +28,18 @@ public class DbHelper extends SQLiteOpenHelper {
     // 设备插口
     private static final String SQL_SOCKET_CREATE_ENTRIES =
             "CREATE TABLE " + DeviceSocketEntry.TABLE_NAME + " (" +
-                    DeviceSocketEntry.COLUMN_NAME_SOCKET_ID + TEXT_TYPE + " PRIMARY KEY," +
+                    DeviceSocketEntry.COLUMN_NAME_SOCKET_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
                     DeviceSocketEntry.COLUMN_NAME_PIC_ID + INT_TYPE + COMMA_SEP +
                     DeviceSocketEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
                     DeviceSocketEntry.COLUMN_NAME_X + INT_TYPE + " DEFAULT -1" + COMMA_SEP +
                     DeviceSocketEntry.COLUMN_NAME_Y + INT_TYPE + " DEFAULT -1" + COMMA_SEP +
-                    DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID + TEXT_TYPE + " DEFAULT -1" +
+                    DeviceSocketEntry.COLUMN_NAME_CONNECTED_ID + INT_TYPE + " DEFAULT -1" +
                     " )";
 
     // 设备类型
     private static final String SQL_DEVICE_TYPE_CREATE_ENTRIES =
             "CREATE TABLE " + DeviceDescriptionEntry.TABLE_NAME + " (" +
-                    DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID + TEXT_TYPE + " PRIMARY KEY," +
+                    DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
                     DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME + TEXT_TYPE + COMMA_SEP +
                     DeviceDescriptionEntry.COLUMN_NAME_DEVICE_NAME + TEXT_TYPE + COMMA_SEP +
                     DeviceDescriptionEntry.COLUMN_NAME_FUNCTION_COUNT + INT_TYPE + COMMA_SEP +
@@ -50,7 +50,7 @@ public class DbHelper extends SQLiteOpenHelper {
     //当前可用设备
     private static final String SQL_DEVICE_AVAILABLE_CREATE_ENTRIES =
             "CREATE TABLE " + DeviceAvailableEntry.TABLE_NAME + " (" +
-                    DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID + TEXT_TYPE + " PRIMARY KEY," +
+                    DeviceAvailableEntry.COLUMN_NAME_DEVICE_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
                     DeviceAvailableEntry.COLUMN_NAME_TYPE_ID + TEXT_TYPE + COMMA_SEP +
                     DeviceAvailableEntry.COLUMN_NAME_TYPE_FEATURE_ID + TEXT_TYPE +
                     " )";
@@ -58,13 +58,15 @@ public class DbHelper extends SQLiteOpenHelper {
     // 设备的功能列表
     private static final String SQL_FUNC_CREATE_ENTRIES =
             "CREATE TABLE " + DeviceFunctionEntry.TABLE_NAME + " (" +
-                    DeviceFunctionEntry.COLUMN_NAME_TYPE_ID + TEXT_TYPE + COMMA_SEP +
+                    DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME + TEXT_TYPE + COMMA_SEP +
                     DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID + TEXT_TYPE + COMMA_SEP +
                     DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME + TEXT_TYPE + COMMA_SEP +
                     "constraint pk_func primary key " + "(" +
-                    DeviceFunctionEntry.COLUMN_NAME_TYPE_ID + "," +
+                    DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME + "," +
                     DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID + ")" +
                     " )";
+
+    //
 
 
     public DbHelper(Context context, String databaseIndex) {
