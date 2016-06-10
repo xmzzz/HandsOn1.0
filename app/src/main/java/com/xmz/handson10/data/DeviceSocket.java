@@ -7,8 +7,6 @@ public class DeviceSocket {
 
     private int mSocketId;                  // 设备接口编号
 
-    private final int mOriginalPicSrcId;
-
     private int mPicSrcId;                  // 该接口的图片
 
     private String mType;                   // 该接口的类型
@@ -21,7 +19,6 @@ public class DeviceSocket {
 
     public DeviceSocket(int picSrcId, String type) {
         mPicSrcId = picSrcId;
-        mOriginalPicSrcId = mPicSrcId;
         mType = type;
         mConnectedDeviceId = -1;
 
@@ -32,7 +29,6 @@ public class DeviceSocket {
     public DeviceSocket(int socketId, int picSrcId, String type, int coordinate_x, int coordinate_y, int connectedDeviceId) {
         mSocketId = socketId;
         mPicSrcId = picSrcId;
-        mOriginalPicSrcId = mPicSrcId;
         mType = type;
         mCoordinate_x = coordinate_x;
         mCoordinate_y = coordinate_y;
@@ -41,14 +37,12 @@ public class DeviceSocket {
 
     public DeviceSocket(int picSrcId, String type, int connectedDeviceId) {
         mPicSrcId = picSrcId;
-        mOriginalPicSrcId = mPicSrcId;
         mType = type;
         mConnectedDeviceId = connectedDeviceId;
     }
 
     public DeviceSocket(int picSrcId, String type, int coordinate_x, int coordinate_y, int connectedDeviceId) {
         mPicSrcId = picSrcId;
-        mOriginalPicSrcId = mPicSrcId;
         mType = type;
         mCoordinate_x = coordinate_x;
         mCoordinate_y = coordinate_y;
@@ -57,15 +51,10 @@ public class DeviceSocket {
 
     public DeviceSocket(int picSrcId, String type, int coordinate_x, int coordinate_y) {
         mPicSrcId = picSrcId;
-        mOriginalPicSrcId = mPicSrcId;
         mType = type;
         mCoordinate_x = coordinate_x;
         mCoordinate_y = coordinate_y;
         mConnectedDeviceId = -1;
-    }
-
-    public int getOriginalPicSrcId() {
-        return mOriginalPicSrcId;
     }
 
     public int getSocketId() {

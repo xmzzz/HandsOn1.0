@@ -1,5 +1,7 @@
 package com.xmz.handson10.deviceconnect;
 
+import android.util.Log;
+
 import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
 import com.xmz.handson10.data.DeviceSocket;
@@ -157,6 +159,10 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 
         loadDeviceSocket(deviceSocketId);
         mDeviceDescriptionLocalSource.getDeviceDescription(deviceTypeId, this);
+        if (mDeviceSocket.getConnectedDeviceId() != -1) {
+            Log.d("delete", "disconnected");
+            disConnectDevice(deviceSocketId);
+        }
         mDeviceSocket.setConnectedDeviceId(deviceId);
         mDeviceSocket.setPicSrcId(mDeviceDescription.getDevicePicSrcId());
         mDeviceSocketLocalSource.updateDeviceSocket(mDeviceSocket);
@@ -165,7 +171,12 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 
     @Override
     public void disConnectDevice(int socketId) {
-
+        loadDeviceSocket(socketId);
+        mDeviceDescriptionLocalSource.deleteAvailableDevice(mDeviceSocket.getConnectedDeviceId());
+        mDeviceSocket.setConnectedDeviceId(-1);
+        mDeviceSocketLocalSource.updateDeviceSocket(mDeviceSocket);
+        Log.d("update", String.valueOf(mDeviceSocket.getSocketId()));
+        loadDeviceSockets();
     }
 
     @Override

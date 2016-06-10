@@ -136,13 +136,15 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
     @Override
     public void showDeviceSockets(List<DeviceSocket> deviceSockets) {
         mContentFL.removeAllViews();
-        for (DeviceSocket deviceSocket : deviceSockets) {
+        for (final DeviceSocket deviceSocket : deviceSockets) {
             LinearLayout compLL = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.device_socket_comp, null);
             ImageView socketPic = (ImageView) compLL.getChildAt(0);
             TextView socketTypeName = (TextView) compLL.getChildAt(1);
             if (deviceSocket.getConnectedDeviceId() == -1) {
-                socketPic.setImageResource(deviceSocket.getOriginalPicSrcId());
+                Log.d(String.valueOf(deviceSocket.getSocketId()), "no connected");
+                socketPic.setImageResource(R.drawable.socket);
             } else {
+                Log.d(String.valueOf(deviceSocket.getSocketId()), "Picture ID");
                 socketPic.setImageResource(deviceSocket.getPicSrcId());
             }
             socketTypeName.setText(String.valueOf(deviceSocket.getSocketId()));
@@ -154,7 +156,6 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                             ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParam.leftMargin = x;
             layoutParam.topMargin = y;
-            Log.e("left x  top y", String.valueOf(x) + "  " + String.valueOf(y));
 
             int newId = View.generateViewId();
             compLL.setId(newId);
@@ -163,10 +164,10 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
             compLL.setOnTouchListener(mDeviceSocketTouchMoveListener);
             compLL.setOnDragListener(mDeviceConnectOnDragListener);
 
-
             mContentFL.addView(compLL, layoutParam);
         }
     }
+
     private class DevicesTouchListener implements  View.OnTouchListener {
         DeviceDescription mDeviceDescription;
         @Override
@@ -193,6 +194,7 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
     private class DeviceSocketTouchMoveListener implements View.OnTouchListener {
         FrameLayout.LayoutParams layoutParams;
         int socketId;
+        boolean isMove = false;
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             socketId = ((DeviceSocket) v.getTag()).getSocketId();
@@ -200,19 +202,22 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
             final int Y = (int) event.getRawY();
             switch ( event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    isMove = false;
                     layoutParams =
                             (FrameLayout.LayoutParams) v.getLayoutParams();
                     mSocketX = X - layoutParams.leftMargin;
                     mSocketY = Y - layoutParams.topMargin;
-                    break;
+                    return true;
                 case MotionEvent.ACTION_UP:
-                    Log.d("TouchEvent",String.valueOf(v.getTag()));
-                    Log.d("X Y", String.valueOf(X) + "   " + String.valueOf(Y));
-                    Log.e("socketX socketY", String.valueOf(mSocketX) + "    " + String.valueOf(mSocketY));
-                    Log.d("socketId", String.valueOf(socketId));
                     mDeviceSocketListener.onSocketMove(socketId, X - mSocketX, Y - mSocketY);
+                    if (!isMove) {
+                        Log.d("up", "is not move");
+                        Log.d("socketId Click", String.valueOf(socketId));
+                        mPresenter.disConnectDevice(socketId);
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    isMove = true;
                     layoutParams.leftMargin = X - mSocketX;
                     layoutParams.topMargin = Y - mSocketY;
                     layoutParams.rightMargin = -200;
