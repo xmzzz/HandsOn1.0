@@ -1,5 +1,6 @@
 package com.xmz.handson10.deviceconnect;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xmz.handson10.R;
+import com.xmz.handson10.addeventdevice.AddEventDeviceActivity;
 import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
 import com.xmz.handson10.data.DeviceSocket;
@@ -44,6 +46,7 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
 
     private FloatingActionButton fabOpenDrawer;
 
+    private FloatingActionButton fabDone;
     private int mSocketX;
 
     private int mSocketY;
@@ -103,6 +106,18 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
             }
         });
 
+        fabDone =
+                (FloatingActionButton) root.findViewById(R.id.fab_done);
+        fabDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AddEventDeviceActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
         mDeviceSocketTouchMoveListener = new DeviceSocketTouchMoveListener();
         mDeviceConnectOnDragListener = new DeviceConnectOnDragListener();
 
@@ -128,7 +143,6 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
             compLL.setTag(deviceDescription);
 
             compLL.setOnTouchListener(new DevicesTouchListener());
-//            compLL.setOnClickListener(new DevicesClickListener());
             mDeviceLL.addView(compLL);
         }
     }
@@ -178,16 +192,7 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
             View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
             v.startDrag(null, myShadow, null, 0);
 
-//            v.startDrag(null, myShadow, null, 0 );
-//            v.setOnDragListener(mDeviceConnectOnDragListener);
             return true;
-        }
-    }
-
-    private class DevicesClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-
         }
     }
 

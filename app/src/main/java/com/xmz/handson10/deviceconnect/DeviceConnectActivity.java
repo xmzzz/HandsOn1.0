@@ -21,7 +21,7 @@ public class DeviceConnectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_main);
 
         mFrameLayout = (FrameLayout) findViewById(R.id.frame_act);
         DeviceConnectFragment deviceConnectFragment =
