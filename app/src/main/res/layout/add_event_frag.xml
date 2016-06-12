@@ -77,18 +77,21 @@
                                     android:layout_width="@dimen/invisible_device_size"
                                     android:layout_height="@dimen/invisible_device_size"
                                     android:src="@drawable/asr"
-                                    android:layout_marginRight="@dimen/small_margin"/>
+                                    android:layout_marginRight="@dimen/small_margin"
+                                    android:alpha="0.6"/>
 
                                 <ImageView
                                     android:layout_width="@dimen/invisible_device_size"
                                     android:layout_height="@dimen/invisible_device_size"
                                     android:src="@drawable/mic"
-                                    android:layout_marginRight="@dimen/small_margin"/>
+                                    android:layout_marginRight="@dimen/small_margin"
+                                    android:alpha="0.6"/>
                                 <ImageView
                                     android:layout_width="@dimen/invisible_device_size"
                                     android:layout_height="@dimen/invisible_device_size"
                                     android:src="@drawable/infrared"
-                                    android:layout_marginRight="@dimen/small_margin"/>
+                                    android:layout_marginRight="@dimen/small_margin"
+                                    android:alpha="0.6"/>
                             </LinearLayout>
                             </LinearLayout>
                         </HorizontalScrollView>

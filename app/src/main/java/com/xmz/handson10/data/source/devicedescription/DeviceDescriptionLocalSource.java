@@ -316,4 +316,77 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         String[] selectionArgs = { selectionArg };
         db.delete(DeviceAvailableEntry.TABLE_NAME, selection, selectionArgs);
     }
+
+    @Override
+    public void updateButtonPic(int deviceId) {
+
+    }
+
+    @Override
+    public void getAvailableButton(int deviceId, GetAvailableDeviceCallback callback) {
+
+    }
+
+    @Override
+    public void getEventDevices(LoadDeviceDescriptionsCallback callback) {
+        List<DeviceDescription> deviceDescriptions = new ArrayList<DeviceDescription>();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String selection = DeviceDescriptionEntry.COLUMN_NAME_FEATURE_ID + " LIKE ?";
+        String[] selectionArgs = { "EVENT" };
+
+        String[] projection = {
+                DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID,
+                DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME,
+                DeviceDescriptionEntry.COLUMN_NAME_DEVICE_NAME,
+                DeviceDescriptionEntry.COLUMN_NAME_FUNCTION_COUNT,
+                DeviceDescriptionEntry.COLUMN_NAME_PIC_ID,
+                DeviceDescriptionEntry.COLUMN_NAME_FEATURE_ID
+        };
+
+        String[] projectionFunc = {
+                DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME,
+                DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID,
+                DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME
+        };
+
+        Cursor c = db.query(
+                DeviceDescriptionEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount()>0) {
+            while (c.moveToNext()) {
+                int typeId = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_ID));
+                String typeName = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_TYPE_NAME));
+                String deviceName = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_DEVICE_NAME));
+                int funcCount = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_FUNCTION_COUNT));
+                int picId = c.getInt(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_PIC_ID));
+                String featureId = c.getString(c.getColumnIndexOrThrow(DeviceDescriptionEntry.COLUMN_NAME_FEATURE_ID));
+
+                String func_selection = DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME + " LIKE ?";
+                String[] func_selectionArgs = { typeName };
+                String[] funcName = new String[funcCount];
+
+                Cursor c_func = db.query(
+                        DeviceFunctionEntry.TABLE_NAME, projectionFunc, func_selection, func_selectionArgs, null, null, null);
+                if (c_func != null && c_func.getCount()>0) {
+                    int i=0;
+                    while (c_func.moveToNext()) {
+                        funcName[i] = c_func.getString(c_func.getColumnIndexOrThrow(DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME));
+                        i++;
+                    }
+                }
+                DeviceDescription deviceDescription = new DeviceDescription(typeId, typeName, deviceName, funcCount, funcName, picId, featureId);
+                deviceDescriptions.add(deviceDescription);
+            }
+        }
+
+        if (c != null) {
+            c.close();
+        }
+        db.close();
+        if (deviceDescriptions.isEmpty()) {
+            callback.onDataNotAvailable();
+        } else {
+            callback.onDeviceDescriptionsLoaded(deviceDescriptions);
+        }
+    }
 }

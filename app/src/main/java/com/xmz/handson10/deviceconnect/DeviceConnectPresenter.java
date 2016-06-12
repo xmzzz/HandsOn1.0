@@ -61,6 +61,10 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 //                R.drawable.motor, "ACTION"
 //        );
 //        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
+//        deviceDescription = new EventButton("BUTTON", "按键", 3, new String[]{"点击", "长按", "单击并保持长按状态"},
+//                R.drawable.button_hand, "EVENT");
+//
+//        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
 //
 //        DeviceSocket deviceSocket = new DeviceSocket(R.drawable.socket, null);
 //        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);

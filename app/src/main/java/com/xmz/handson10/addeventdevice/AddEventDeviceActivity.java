@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
 import com.xmz.handson10.R;
+import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionLocalSource;
 
 /**
  * Created by xmz on 2016/6/8.
@@ -31,7 +32,8 @@ public class AddEventDeviceActivity extends AppCompatActivity {
             transaction.commit();
         }
 
-        mPresenter = new AddEventDevicePresenter(addEventDeviceFragment);
+        mPresenter = new AddEventDevicePresenter(DeviceDescriptionLocalSource.getInstance(this, "00"),
+                addEventDeviceFragment);
     }
 
 }

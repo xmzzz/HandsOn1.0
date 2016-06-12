@@ -38,6 +38,7 @@ public interface DeviceDescriptionSource {
         void onDataNotAvailable();
     }
 
+
     void getDeviceDescriptions(LoadDeviceDescriptionsCallback callback);
 
     void getDeviceDescription(int typeId, GetDeviceDescriptionCallback callback);
@@ -58,5 +59,10 @@ public interface DeviceDescriptionSource {
 
     void deleteAvailableDevice(int deviceId);
 
+    void updateButtonPic(int deviceId);
+
+    void getAvailableButton(int deviceId, GetAvailableDeviceCallback callback);
+
+    void getEventDevices(LoadDeviceDescriptionsCallback callback);
 
 }

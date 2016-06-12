@@ -32,4 +32,11 @@ public final class DeviceDescriptionPersistenceContract {
         public static final String COLUMN_NAME_FUNCTION_NAME = "func_name";
 
     }
+
+    public static abstract class ButtonPicEntry {
+        public static final String TABLE_NAME = "device_button_pic";
+        public static final String COLUMN_NAME_ID = "id";
+        public static final String COLUMN_NAME_DEVICE_ID = "device_id";
+        public static final String COLUMN_NAME_BUTTON_PIC_ID = "pic_src_id";
+    }
 }

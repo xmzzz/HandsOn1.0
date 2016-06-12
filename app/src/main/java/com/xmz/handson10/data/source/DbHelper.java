@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.xmz.handson10.data.DocumentedDatabaseNameFactory;
+import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.ButtonPicEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceAvailableEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceDescriptionEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceFunctionEntry;
@@ -66,7 +67,13 @@ public class DbHelper extends SQLiteOpenHelper {
                     DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID + ")" +
                     " )";
 
-    //
+    // 按钮的背景集合
+    private static final String SQL_BUTTON_PIC_CREATE_ENTRIES =
+            "CREATE TABLE " + ButtonPicEntry.TABLE_NAME + " (" +
+                    ButtonPicEntry.COLUMN_NAME_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
+                    ButtonPicEntry.COLUMN_NAME_DEVICE_ID + INT_TYPE + COMMA_SEP +
+                    ButtonPicEntry.COLUMN_NAME_BUTTON_PIC_ID + INT_TYPE +
+                    " )";
 
 
     public DbHelper(Context context, String databaseIndex) {
@@ -81,6 +88,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DEVICE_TYPE_CREATE_ENTRIES);
         db.execSQL(SQL_DEVICE_AVAILABLE_CREATE_ENTRIES);
         db.execSQL(SQL_FUNC_CREATE_ENTRIES);
+        db.execSQL(SQL_BUTTON_PIC_CREATE_ENTRIES);
     }
 
     @Override
