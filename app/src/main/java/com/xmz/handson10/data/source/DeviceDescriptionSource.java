@@ -2,6 +2,7 @@ package com.xmz.handson10.data.source;
 
 import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
+import com.xmz.handson10.data.EventDevice;
 
 import java.util.List;
 
@@ -38,6 +39,20 @@ public interface DeviceDescriptionSource {
         void onDataNotAvailable();
     }
 
+    interface LoadAvailableEventDevicesCallback {
+
+        void onAvailableEventDevicesLoaded(List<EventDevice> eventDevices);
+
+        void onDataNotAvailable();
+    }
+
+    interface GetAvailableEventDeviceCallback {
+
+        void onAvailableEventDeviceLoaded(EventDevice eventDevice);
+
+        void onDataNotAvailable();
+    }
+
 
     void getDeviceDescriptions(LoadDeviceDescriptionsCallback callback);
 
@@ -59,10 +74,22 @@ public interface DeviceDescriptionSource {
 
     void deleteAvailableDevice(int deviceId);
 
-    void updateButtonPic(int deviceId);
-
     void getAvailableButton(int deviceId, GetAvailableDeviceCallback callback);
 
     void getEventDevices(LoadDeviceDescriptionsCallback callback);
+
+    void getAvailableEventDevices(LoadAvailableEventDevicesCallback callback);
+
+    void getAvailableEventDevice(int deviceId, GetAvailableEventDeviceCallback callback);
+
+    void removeAvailableEventDevice(int deviceId);
+
+    int saveAvailableEventDevice(EventDevice eventDevice);
+
+    void updateAvailableEventDevice(EventDevice eventDevice);
+
+    int[] getEventDevicePictureId();
+
+    void saveEventDevicePicture();
 
 }

@@ -6,6 +6,9 @@
     <color name="colorDeviceDescriptionName">#303F9F</color>
     <color name="colorDeviceFeature">#8891FF</color>
     <color name="colorDeviceSocket">#8888ff</color>
-    <color name="colorEventDevice">#cee2fd</color>
+    <color name="colorEventDevice">#55cee2fd</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorEventDeviceFLOriginal">#FFFFFF</color>
+    <color name="colorEventDeviceFLStarted">#f5ddb8</color>
+    <color name="colorEventDeviceFLLocation">#f5e9d6</color>
 </resources>

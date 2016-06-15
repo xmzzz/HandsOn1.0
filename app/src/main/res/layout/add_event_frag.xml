@@ -78,7 +78,7 @@
                                     android:layout_height="@dimen/invisible_device_size"
                                     android:src="@drawable/asr"
                                     android:layout_marginRight="@dimen/small_margin"
-                                    android:alpha="0.6"/>
+                                    />
 
                                 <ImageView
                                     android:layout_width="@dimen/invisible_device_size"
@@ -104,6 +104,8 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal|center_vertical"
                         android:orientation="vertical">
+
+
                     </FrameLayout>
                 </LinearLayout>
 
@@ -128,6 +130,16 @@
                 app:fabSize="normal"
                 app:layout_anchor="@id/contentFrame"
                 app:layout_anchorGravity="bottom|right|end"
+                />
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@drawable/trash_closed"
+                app:fabSize="normal"
+                app:layout_anchor="@id/contentFL"
+                app:layout_anchorGravity="left|bottom"
+                android:id="@+id/fab_device_trash"
                 />
         </android.support.design.widget.CoordinatorLayout>
 

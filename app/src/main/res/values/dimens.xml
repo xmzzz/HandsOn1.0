@@ -12,5 +12,11 @@
     <dimen name="invisible_device_size">64dp</dimen>
     <dimen name="small_margin">4dp</dimen>
 
+    <dimen name="available_event_device_width">60dp</dimen>
+    <dimen name="available_event_device_height">90dp</dimen>
+    <dimen name="available_event_device_menu_height">30dp</dimen>
+
+    <dimen name="recycle_bin_size">60dp</dimen>
+
 
 </resources>

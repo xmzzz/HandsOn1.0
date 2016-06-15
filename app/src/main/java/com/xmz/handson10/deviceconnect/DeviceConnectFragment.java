@@ -214,8 +214,9 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                     mSocketY = Y - layoutParams.topMargin;
                     return true;
                 case MotionEvent.ACTION_UP:
-                    mDeviceSocketListener.onSocketMove(socketId, X - mSocketX, Y - mSocketY);
-                    if (!isMove) {
+                    if (isMove) {
+                        mDeviceSocketListener.onSocketMove(socketId, X - mSocketX, Y - mSocketY);
+                    } else {
                         Log.d("up", "is not move");
                         Log.d("socketId Click", String.valueOf(socketId));
                         mPresenter.disConnectDevice(socketId);

@@ -5,10 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.xmz.handson10.data.DocumentedDatabaseNameFactory;
-import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.ButtonPicEntry;
+import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.AvailableEventDeviceEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceAvailableEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceDescriptionEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceFunctionEntry;
+import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.EventDevicePictureEntry;
 import com.xmz.handson10.data.source.devicesocket.DeviceSocketPersistenceContract.DeviceSocketEntry;
 
 /**
@@ -67,12 +68,24 @@ public class DbHelper extends SQLiteOpenHelper {
                     DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID + ")" +
                     " )";
 
-    // 按钮的背景集合
-    private static final String SQL_BUTTON_PIC_CREATE_ENTRIES =
-            "CREATE TABLE " + ButtonPicEntry.TABLE_NAME + " (" +
-                    ButtonPicEntry.COLUMN_NAME_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
-                    ButtonPicEntry.COLUMN_NAME_DEVICE_ID + INT_TYPE + COMMA_SEP +
-                    ButtonPicEntry.COLUMN_NAME_BUTTON_PIC_ID + INT_TYPE +
+
+    // 可用的事件触发设备
+    private static final String SQL_AVAILABLE_EVENT_DEVICE_CREATE_ENTRIES =
+            "CREATE TABLE " + AvailableEventDeviceEntry.TABLE_NAME + " (" +
+                    AvailableEventDeviceEntry.COLUMN_NAME_DEVICE_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
+                    AvailableEventDeviceEntry.COLUMN_NAME_TYPE_NAME + TEXT_TYPE + COMMA_SEP +
+                    AvailableEventDeviceEntry.COLUMN_NAME_DEVICE_NAME + TEXT_TYPE + COMMA_SEP +
+                    AvailableEventDeviceEntry.COLUMN_NAME_PIC_ID + INT_TYPE + COMMA_SEP +
+                    AvailableEventDeviceEntry.COLUMN_NAME_FUNCTION_COUNT + INT_TYPE + COMMA_SEP +
+                    AvailableEventDeviceEntry.COLUMN_NAME_X + INT_TYPE + COMMA_SEP +
+                    AvailableEventDeviceEntry.COLUMN_NAME_Y + INT_TYPE +
+                    " )";
+
+    // 事件类型设备可供选择的背景图
+    private static final String SQL_EVENT_DEVICE_PICTURE_CREATE_ENTRIES =
+            "CREATE TABLE " + EventDevicePictureEntry.TABLE_NAME + " (" +
+                    EventDevicePictureEntry.COLUMN_NAME_PIC_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
+                    EventDevicePictureEntry.COLUMN_NAME_PIC_RES_ID + INT_TYPE +
                     " )";
 
 
@@ -88,7 +101,8 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DEVICE_TYPE_CREATE_ENTRIES);
         db.execSQL(SQL_DEVICE_AVAILABLE_CREATE_ENTRIES);
         db.execSQL(SQL_FUNC_CREATE_ENTRIES);
-        db.execSQL(SQL_BUTTON_PIC_CREATE_ENTRIES);
+        db.execSQL(SQL_AVAILABLE_EVENT_DEVICE_CREATE_ENTRIES);
+        db.execSQL(SQL_EVENT_DEVICE_PICTURE_CREATE_ENTRIES);
     }
 
     @Override

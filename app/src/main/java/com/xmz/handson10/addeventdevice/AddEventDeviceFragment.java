@@ -3,7 +3,9 @@ package com.xmz.handson10.addeventdevice;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,8 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xmz.handson10.R;
-import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
+import com.xmz.handson10.data.EventDevice;
 
 import java.util.List;
 
@@ -35,6 +37,10 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     private FloatingActionButton fabStartPlayActivity;
 
     private FloatingActionButton fabOpenDrawer;
+
+    private FloatingActionButton fabDeviceTrash;
+
+    private int mNewEventDeviceTypeId;
 
     private AvailableEventDeviceTouchMoveListener mAvailableEventDeviceTouchMoveListener;
 
@@ -68,6 +74,8 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
         mEventDeviceLL = (LinearLayout) root.findViewById(R.id.event_devices_linear_layout);
         mContentFL = (FrameLayout) root.findViewById(R.id.contentFL);
 
+        mContentFL.setOnDragListener(new AddEventDeviceOnDragListener());
+
         fabOpenDrawer =
                 (FloatingActionButton) root.findViewById(R.id.fab_open_drawer);
         fabOpenDrawer.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +94,50 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
             }
         });
 
+        fabDeviceTrash = (FloatingActionButton) root.findViewById(R.id.fab_device_trash);
+        fabDeviceTrash.setVisibility(View.GONE);
+
+        mAvailableEventDeviceTouchMoveListener = new AvailableEventDeviceTouchMoveListener();
+
         return root;
+    }
+
+    public class AddEventDeviceOnDragListener implements View.OnDragListener {
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            int action = event.getAction();
+            switch (action) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    mContentFL.setBackgroundResource(R.color.colorEventDeviceFLStarted);
+                    closeEventDevicesDrawer();
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    mContentFL.setBackgroundResource(R.color.colorEventDeviceFLOriginal);
+                    break;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    mContentFL.setBackgroundResource(R.color.colorEventDeviceFLLocation);
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    mContentFL.setBackgroundResource(R.color.colorEventDeviceFLStarted);
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                    LinearLayout availableEventDeviceLL =
+                            (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.available_event_device_comp, null);
+                    int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    availableEventDeviceLL.measure(w, h);
+                    int width = availableEventDeviceLL.getMeasuredWidth();
+                    int height = availableEventDeviceLL.getMeasuredHeight();
+
+                    mPresenter.addAvailableEventDevice(mNewEventDeviceTypeId, (int)(event.getX() - width/2), (int)(event.getY() - height/2));
+
+                    break;
+
+            }
+            return true;
+        }
     }
 
     @Override
@@ -110,11 +161,12 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     }
 
     private class EventDeviceTouchListener implements View.OnTouchListener {
-        DeviceDescription mDeviceDescription;
+        DeviceDescription deviceDescription;
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            mDeviceDescription = (DeviceDescription) v.getTag();
+            deviceDescription = (DeviceDescription) v.getTag();
+            mNewEventDeviceTypeId = deviceDescription.getTypeId();
 
             View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
             v.startDrag(null, myShadow, null, 0);
@@ -124,19 +176,172 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     }
 
     @Override
-    public void showAvailableEventDevices(List<DeviceAvailable> availableEventDevices) {
+    public void showAvailableEventDevices(List<EventDevice> eventDevices) {
+        mContentFL.removeAllViews();
+        for (final EventDevice eventDevice : eventDevices) {
+            LinearLayout availableEventDeviceLL =
+                    (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.available_event_device_comp, null);
+            ImageView availableEventDeviceIV = (ImageView) availableEventDeviceLL.getChildAt(0);
+            LinearLayout settingLL = (LinearLayout) availableEventDeviceLL.getChildAt(1);
+            ImageView deviceLookIV = (ImageView) settingLL.getChildAt(0);
+            ImageView settingIV = (ImageView) settingLL.getChildAt(1);
+            deviceLookIV.setVisibility(View.GONE);
+            settingIV.setVisibility(View.GONE);
+
+            availableEventDeviceIV.setImageResource(eventDevice.getDevicePicSrcId());
+
+            int x = eventDevice.getCoordinate_x();
+            int y = eventDevice.getCoordinate_y();
+
+            FrameLayout.LayoutParams layoutParams =
+                    new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.leftMargin = x;
+            layoutParams.topMargin = y;
+
+            int newId = View.generateViewId();
+            availableEventDeviceLL.setId(newId);
+            availableEventDeviceLL.setTag(eventDevice);
+
+            availableEventDeviceLL.setOnTouchListener(mAvailableEventDeviceTouchMoveListener);
+
+            mContentFL.addView(availableEventDeviceLL, layoutParams);
+        }
+    }
+
+    private void showAvailableEventDevicesWithTrash() {
 
     }
 
     private class AvailableEventDeviceTouchMoveListener implements View.OnTouchListener {
         FrameLayout.LayoutParams layoutParams;
+        boolean isMove = false;
+        int viewWidth = 0;
+        int viewHeight = 0;
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            return false;
+            EventDevice eventDevice = (EventDevice) v.getTag();
+            int deviceId = eventDevice.getDeviceId();
+            int X = (int) event.getRawX();
+            int Y = (int) event.getRawY();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    isMove = false;
+                    layoutParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+                    viewWidth = X - layoutParams.leftMargin;
+                    viewHeight = Y - layoutParams.topMargin;
+
+                    showAvailableEventDevicesWithTrash();
+
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    mAvailableEventDeviceProcessor.onAvailableEventDeviceMove(deviceId, X - viewWidth, Y - viewHeight);
+                    if (!isMove) {
+                        showAvailableEventDeviceSettingBar(deviceId);
+            }
+                    processTrashEventEnd(deviceId, X, Y);
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    isMove = true;
+                    layoutParams.leftMargin = X - viewWidth;
+                    layoutParams.topMargin = Y - viewHeight;
+                    v.setLayoutParams(layoutParams);
+
+                    processTrashEventStart(X, Y);
+                    return true;
+            }
+            mContentFL.invalidate();
+            return true;
         }
     }
 
+    private void processTrashEventStart(int X, int Y) {
+        fabDeviceTrash.setVisibility(View.VISIBLE);
+        int[] location = new int[2];
+        fabDeviceTrash.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+//        Log.d("processT", String.valueOf(x) + " " + String.valueOf(y));
+        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        fabDeviceTrash.measure(w, h);
+        int width = fabDeviceTrash.getMeasuredWidth();
+        int height = fabDeviceTrash.getMeasuredHeight();
+//        Log.d("processTrashEvent", String.valueOf(width) + " " + String.valueOf(height));
+
+        if ((X>x&&X<x+width)&&(Y>y&&Y<y+height)) {
+            fabDeviceTrash.setImageResource(R.drawable.trash_open);
+        } else {
+            fabDeviceTrash.setImageResource(R.drawable.trash_closed);
+        }
+    }
+
+    private void processTrashEventEnd(int deviceId, int X, int Y) {
+        fabDeviceTrash.setVisibility(View.GONE);
+        int[] location = new int[2];
+        fabDeviceTrash.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+//        Log.d("processT", String.valueOf(x) + " " + String.valueOf(y));
+        int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        fabDeviceTrash.measure(w, h);
+        int width = fabDeviceTrash.getMeasuredWidth();
+        int height = fabDeviceTrash.getMeasuredHeight();
+//        Log.d("processTrashEvent", String.valueOf(width) + " " + String.valueOf(height));
+
+        if ((X>x&&X<x+width)&&(Y>y&&Y<y+height)) {
+            mPresenter.deleteAvailableEventDevice(deviceId);
+        }
+    }
+
+
+    @Override
+    public void showAvailableEventDeviceSettingBar(int deviceId) {
+        for (int i=0; i<mContentFL.getChildCount(); i++) {
+            LinearLayout availableEventDeviceLL = (LinearLayout) mContentFL.getChildAt(i);
+            int nowId =((EventDevice) availableEventDeviceLL.getTag()).getDeviceId();
+            if (nowId == deviceId) {
+                ImageView availableEventDeviceIV = (ImageView) availableEventDeviceLL.getChildAt(0);
+                LinearLayout settingLL = (LinearLayout) availableEventDeviceLL.getChildAt(1);
+                ImageView deviceLookIV = (ImageView) settingLL.getChildAt(0);
+                ImageView settingIV = (ImageView) settingLL.getChildAt(1);
+                deviceLookIV.setVisibility(View.VISIBLE);
+                settingIV.setVisibility(View.VISIBLE);
+                deviceLookIV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showEventDevicePicSelector();
+                    }
+                });
+                settingIV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void showEventDevicePicSelector() {
+
+    }
+
+    public interface AvailableEventDeviceProcessor {
+
+        void onAvailableEventDeviceMove(int deviceId, int x, int y);
+
+    }
+
+    AvailableEventDeviceProcessor mAvailableEventDeviceProcessor = new AvailableEventDeviceProcessor() {
+        @Override
+        public void onAvailableEventDeviceMove(int deviceId, int x, int y) {
+            mPresenter.updateAvailableEventDevice(deviceId, x, y);
+        }
+    };
     @Override
     public void showEventDevicesEditor(int eventDeviceId) {
 
@@ -154,6 +359,6 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
 
     @Override
     public void closeEventDevicesDrawer() {
-
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 }

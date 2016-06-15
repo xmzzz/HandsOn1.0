@@ -33,10 +33,21 @@ public final class DeviceDescriptionPersistenceContract {
 
     }
 
-    public static abstract class ButtonPicEntry {
-        public static final String TABLE_NAME = "device_button_pic";
-        public static final String COLUMN_NAME_ID = "id";
+    public static abstract class AvailableEventDeviceEntry {
+        public static final String TABLE_NAME = "available_event_device";
         public static final String COLUMN_NAME_DEVICE_ID = "device_id";
-        public static final String COLUMN_NAME_BUTTON_PIC_ID = "pic_src_id";
+        public static final String COLUMN_NAME_TYPE_NAME = "type_name";
+        public static final String COLUMN_NAME_DEVICE_NAME = "device_name";
+        public static final String COLUMN_NAME_PIC_ID = "pic_id";
+        public static final String COLUMN_NAME_FUNCTION_COUNT = "func_count";
+        public static final String COLUMN_NAME_X = "x";
+        public static final String COLUMN_NAME_Y = "y";
+
+    }
+
+    public static abstract class EventDevicePictureEntry {
+        public static final String TABLE_NAME = "event_device_pic";
+        public static final String COLUMN_NAME_PIC_ID = "pic_id";
+        public static final String COLUMN_NAME_PIC_RES_ID = "pic_res_id";
     }
 }
