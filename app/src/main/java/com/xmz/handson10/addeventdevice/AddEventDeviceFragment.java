@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class AddEventDeviceFragment extends Fragment implements AddEventDeviceContract.View {
 
-    private AddEventDeviceContract.Presenter mPresenter;
+    private AddEventDeviceContract.Presenter mPresenter;  //
 
     private DrawerLayout mDrawerLayout;
 
