@@ -2,9 +2,13 @@ package com.xmz.handson10.deviceconnect;
 
 import android.util.Log;
 
+import com.xmz.handson10.R;
 import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
 import com.xmz.handson10.data.DeviceSocket;
+import com.xmz.handson10.data.devices.DeviceLight;
+import com.xmz.handson10.data.devices.DeviceMotor;
+import com.xmz.handson10.data.devices.EventButton;
 import com.xmz.handson10.data.source.DeviceDescriptionSource;
 import com.xmz.handson10.data.source.DeviceSocketSource;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionLocalSource;
@@ -17,7 +21,7 @@ import java.util.List;
  */
 public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
         DeviceSocketLocalSource.GetSocketCallback, DeviceDescriptionSource.GetAvailableDeviceCallback,
-        DeviceDescriptionSource.GetDeviceDescriptionCallback{
+        DeviceDescriptionSource.GetDeviceDescriptionCallback {
 
     private final DeviceDescriptionLocalSource mDeviceDescriptionLocalSource;
 
@@ -60,19 +64,20 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 //                "MOTOR", "马达", 2, new String[]{"顺时针转", "逆时针转"},
 //                R.drawable.motor, "ACTION"
 //        );
+//
 //        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
 //        deviceDescription = new EventButton("BUTTON", "按键", 3, new String[]{"点击", "长按", "单击并保持长按状态"},
 //                R.drawable.button_hand, "EVENT");
 //
 //        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
 //
-//        DeviceSocket deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        DeviceSocket deviceSocket = new DeviceSocket(R.drawable.socket, null, 100, 100);
 //        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
-//        deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        deviceSocket = new DeviceSocket(R.drawable.socket, null, 200, 200);
 //        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
-//        deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        deviceSocket = new DeviceSocket(R.drawable.socket, null, 300, 300);
 //        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
-//        deviceSocket = new DeviceSocket(R.drawable.socket, null);
+//        deviceSocket = new DeviceSocket(R.drawable.socket, null, 400, 400);
 //        mDeviceSocketLocalSource.saveDeviceSocket(deviceSocket);
 
     }

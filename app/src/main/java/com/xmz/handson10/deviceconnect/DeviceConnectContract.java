@@ -1,5 +1,7 @@
 package com.xmz.handson10.deviceconnect;
 
+import android.widget.ImageView;
+
 import com.xmz.handson10.BasePresenter;
 import com.xmz.handson10.BaseView;
 import com.xmz.handson10.data.DeviceAvailable;
@@ -28,6 +30,10 @@ public interface DeviceConnectContract {
         void showDeviceDescriptionsDrawer();
 
         void closeDeviceDescriptionsDrawer();
+
+        void flash(ImageView imageView);
+
+        void toastMsg(String message);
     }
 
     interface Presenter extends BasePresenter {
