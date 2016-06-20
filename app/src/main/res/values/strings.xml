@@ -5,4 +5,6 @@
 
     <string name="lock">Lock</string>
     <string name="unlock">Unlock</string>
+    <string name="dialog_positive_button">确定</string>
+    <string name="dialog_negative_button">取消</string>
 </resources>

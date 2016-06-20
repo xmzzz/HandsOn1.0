@@ -602,4 +602,20 @@ public class DeviceDescriptionLocalSource implements DeviceDescriptionSource {
         db.insert(EventDevicePictureEntry.TABLE_NAME, null, contentValues);
         db.close();
     }
+
+    @Override
+    public void updateAvailableEventDevicePicture(int deviceId, int newPicId) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        String selectionArg = String.valueOf(deviceId);
+        String selection = AvailableEventDeviceEntry.COLUMN_NAME_DEVICE_ID + " LIKE ?";
+
+        String[] selectionArgs = { selectionArg };
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(AvailableEventDeviceEntry.COLUMN_NAME_PIC_ID, newPicId);
+
+        db.update(AvailableEventDeviceEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+        db.close();
+
+    }
 }

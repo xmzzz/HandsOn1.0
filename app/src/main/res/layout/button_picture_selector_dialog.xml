@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/arrow_up"
+        android:id="@+id/button_up"
+        android:alpha="0.6"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/arrow_down"
+        android:layout_toRightOf="@+id/button_up"
+        android:id="@+id/button_down"
+        android:alpha="0.6"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/arrow_left"
+        android:layout_toRightOf="@id/button_down"
+        android:id="@+id/button_left"
+        android:alpha="0.6"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/arrow_right"
+        android:id="@+id/button_right"
+        android:layout_toRightOf="@+id/button_left"
+        android:alpha="0.6"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/button1"
+        android:layout_below="@id/button_up"
+        android:id="@+id/button1"
+        android:alpha="0.6"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/button2"
+        android:id="@+id/button2"
+        android:layout_below="@id/button_down"
+        android:layout_toRightOf="@+id/button1"
+        android:alpha="0.6"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/button3"
+        android:layout_below="@+id/button_left"
+        android:id="@+id/button3"
+        android:layout_toRightOf="@+id/button2"
+        android:alpha="0.6"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/button_pic_selector_size"
+        android:layout_height="@dimen/button_pic_selector_size"
+        android:src="@drawable/button4"
+        android:id="@+id/button4"
+        android:layout_below="@+id/button_right"
+        android:layout_toRightOf="@+id/button3"
+        android:alpha="0.6"
+        />
+
+</RelativeLayout>

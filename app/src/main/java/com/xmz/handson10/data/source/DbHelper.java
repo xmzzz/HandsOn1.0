@@ -11,6 +11,7 @@ import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersiste
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.DeviceFunctionEntry;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionPersistenceContract.EventDevicePictureEntry;
 import com.xmz.handson10.data.source.devicesocket.DeviceSocketPersistenceContract.DeviceSocketEntry;
+import com.xmz.handson10.data.source.instruction.InstructionPersistenceContract.InstructionEntry;
 
 /**
  * Created by xmz on 2016/5/28.
@@ -61,7 +62,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SQL_FUNC_CREATE_ENTRIES =
             "CREATE TABLE " + DeviceFunctionEntry.TABLE_NAME + " (" +
                     DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME + TEXT_TYPE + COMMA_SEP +
-                    DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID + TEXT_TYPE + COMMA_SEP +
+                    DeviceFunctionEntry.COLUMN_NAME_FUNCTION_ID + INT_TYPE + COMMA_SEP +
                     DeviceFunctionEntry.COLUMN_NAME_FUNCTION_NAME + TEXT_TYPE + COMMA_SEP +
                     "constraint pk_func primary key " + "(" +
                     DeviceFunctionEntry.COLUMN_NAME_TYPE_NAME + "," +
@@ -88,6 +89,18 @@ public class DbHelper extends SQLiteOpenHelper {
                     EventDevicePictureEntry.COLUMN_NAME_PIC_RES_ID + INT_TYPE +
                     " )";
 
+    // 用户编辑的控制命令
+    private static final String SQL_INSTRUCTIONS_CREATE_ENTRIES =
+            "CREATE TABLE " + InstructionEntry.TABLE_NAME + " (" +
+                    InstructionEntry.COLUMN_NAME_INSTRUCTION_ID + INT_TYPE + " PRIMARY KEY AUTOINCREMENT," +
+                    InstructionEntry.COLUMN_NAME_EVENT_DEVICE_ID + INT_TYPE + COMMA_SEP +
+                    InstructionEntry.COLUMN_NAME_EVENT_DEVICE_FUNC_ID + INT_TYPE + COMMA_SEP +
+                    InstructionEntry.COLUMN_NAME_DEVICE_ID + INT_TYPE + COMMA_SEP +
+                    InstructionEntry.COLUMN_NAME_FUNCTION_ID + INT_TYPE + COMMA_SEP +
+                    InstructionEntry.COLUMN_NAME_FUNCTION_DURATION + INT_TYPE + COMMA_SEP +
+                    InstructionEntry.COLUMN_NAME_X + INT_TYPE + COMMA_SEP +
+                    InstructionEntry.COLUMN_NAME_Y + INT_TYPE +
+                    " )";
 
     public DbHelper(Context context, String databaseIndex) {
         super(context,
@@ -103,6 +116,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_FUNC_CREATE_ENTRIES);
         db.execSQL(SQL_AVAILABLE_EVENT_DEVICE_CREATE_ENTRIES);
         db.execSQL(SQL_EVENT_DEVICE_PICTURE_CREATE_ENTRIES);
+        db.execSQL(SQL_INSTRUCTIONS_CREATE_ENTRIES);
     }
 
     @Override

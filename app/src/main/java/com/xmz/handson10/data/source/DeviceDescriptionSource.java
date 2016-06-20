@@ -88,6 +88,8 @@ public interface DeviceDescriptionSource {
 
     void updateAvailableEventDevice(EventDevice eventDevice);
 
+    void updateAvailableEventDevicePicture(int deviceId, int newPicId);
+
     int[] getEventDevicePictureId();
 
     void saveEventDevicePicture();
