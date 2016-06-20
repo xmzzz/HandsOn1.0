@@ -5,12 +5,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +28,8 @@ import java.util.List;
  * Created by xmz on 2016/6/8.
  */
 public class AddEventDeviceFragment extends Fragment implements AddEventDeviceContract.View {
+
+    private HorizontalScrollView horizontalScrollView;
 
     private AddEventDeviceContract.Presenter mPresenter;  //
 
@@ -44,7 +49,8 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
 
     private AvailableEventDeviceTouchMoveListener mAvailableEventDeviceTouchMoveListener;
 
-    public AddEventDeviceFragment() {}
+    public AddEventDeviceFragment() {
+    }
 
     public static AddEventDeviceFragment newInstance() {
         return new AddEventDeviceFragment();
@@ -70,6 +76,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.add_event_frag, container, false);
+        horizontalScrollView = (HorizontalScrollView) root.findViewById(R.id.horizontalScrollView);
         mDrawerLayout = (DrawerLayout) root.findViewById(R.id.drawer_layout_frag);
         mEventDeviceLL = (LinearLayout) root.findViewById(R.id.event_devices_linear_layout);
         mContentFL = (FrameLayout) root.findViewById(R.id.contentFL);
@@ -131,7 +138,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
                     int width = availableEventDeviceLL.getMeasuredWidth();
                     int height = availableEventDeviceLL.getMeasuredHeight();
 
-                    mPresenter.addAvailableEventDevice(mNewEventDeviceTypeId, (int)(event.getX() - width/2), (int)(event.getY() - height/2));
+                    mPresenter.addAvailableEventDevice(mNewEventDeviceTypeId, (int) (event.getX() - width / 2), (int) (event.getY() - height / 2));
 
                     break;
 
@@ -219,12 +226,25 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
         int viewWidth = 0;
         int viewHeight = 0;
 
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int screenWidth = dm.widthPixels;
+        int screenHeight = dm.heightPixels;
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             EventDevice eventDevice = (EventDevice) v.getTag();
             int deviceId = eventDevice.getDeviceId();
             int X = (int) event.getRawX();
             int Y = (int) event.getRawY();
+
+            int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            v.measure(w, h);
+            int width = v.getMeasuredWidth();
+            int height = v.getMeasuredHeight();
+            horizontalScrollView.measure(w,h);
+            int h_height = horizontalScrollView.getMeasuredHeight();
+
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     isMove = false;
@@ -236,14 +256,33 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
 
                     return true;
                 case MotionEvent.ACTION_UP:
-                    mAvailableEventDeviceProcessor.onAvailableEventDeviceMove(deviceId, X - viewWidth, Y - viewHeight);
+                    /*避免控件脱离目标区域*/
+                    if (layoutParams.leftMargin < 0) {
+                        layoutParams.leftMargin = 0;
+                    }
+                    if (layoutParams.topMargin < 10) {
+                        Log.d("layoutParams.topMargin", String.valueOf(layoutParams.topMargin));
+                        layoutParams.topMargin = 10;
+                    }
+                    if (layoutParams.leftMargin > screenWidth - width) {
+                        Log.d("layoutParams.leftMargin", String.valueOf(layoutParams.leftMargin));
+                        layoutParams.leftMargin = screenWidth - width;
+                    }
+                    Log.d("layoutParams.topMargin", String.valueOf(layoutParams.topMargin));
+                    Log.d("layoutParams.topMargin2", String.valueOf(screenHeight - h_height - 100 - height));
+                    if (layoutParams.topMargin > screenHeight - h_height - 100 - height) {
+                        layoutParams.topMargin = screenHeight - h_height - 100 - height;
+                    }
+
+                    mAvailableEventDeviceProcessor.onAvailableEventDeviceMove(deviceId, layoutParams.leftMargin, layoutParams.topMargin);
                     if (!isMove) {
                         showAvailableEventDeviceSettingBar(deviceId);
-            }
+                    }
                     processTrashEventEnd(deviceId, X, Y);
                     return true;
                 case MotionEvent.ACTION_MOVE:
                     isMove = true;
+//                    Log.d("viewWidth", String.valueOf(viewWidth));
                     layoutParams.leftMargin = X - viewWidth;
                     layoutParams.topMargin = Y - viewHeight;
                     v.setLayoutParams(layoutParams);
@@ -270,7 +309,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
         int height = fabDeviceTrash.getMeasuredHeight();
 //        Log.d("processTrashEvent", String.valueOf(width) + " " + String.valueOf(height));
 
-        if ((X>x&&X<x+width)&&(Y>y&&Y<y+height)) {
+        if ((X > x && X < x + width) && (Y > y && Y < y + height)) {
             fabDeviceTrash.setImageResource(R.drawable.trash_open);
         } else {
             fabDeviceTrash.setImageResource(R.drawable.trash_closed);
@@ -291,7 +330,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
         int height = fabDeviceTrash.getMeasuredHeight();
 //        Log.d("processTrashEvent", String.valueOf(width) + " " + String.valueOf(height));
 
-        if ((X>x&&X<x+width)&&(Y>y&&Y<y+height)) {
+        if ((X > x && X < x + width) && (Y > y && Y < y + height)) {
             mPresenter.deleteAvailableEventDevice(deviceId);
         }
     }
@@ -299,9 +338,9 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
 
     @Override
     public void showAvailableEventDeviceSettingBar(int deviceId) {
-        for (int i=0; i<mContentFL.getChildCount(); i++) {
+        for (int i = 0; i < mContentFL.getChildCount(); i++) {
             LinearLayout availableEventDeviceLL = (LinearLayout) mContentFL.getChildAt(i);
-            int nowId =((EventDevice) availableEventDeviceLL.getTag()).getDeviceId();
+            int nowId = ((EventDevice) availableEventDeviceLL.getTag()).getDeviceId();
             if (nowId == deviceId) {
                 ImageView availableEventDeviceIV = (ImageView) availableEventDeviceLL.getChildAt(0);
                 LinearLayout settingLL = (LinearLayout) availableEventDeviceLL.getChildAt(1);
@@ -342,6 +381,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
             mPresenter.updateAvailableEventDevice(deviceId, x, y);
         }
     };
+
     @Override
     public void showEventDevicesEditor(int eventDeviceId) {
 
@@ -354,7 +394,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
 
     @Override
     public void showEventDevicesDrawer() {
-
+        mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
     @Override

@@ -35,6 +35,7 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 
     private DeviceDescription mDeviceDescription;
 
+
     public DeviceConnectPresenter(DeviceDescriptionLocalSource deviceDescriptionLocalSource,
                                   DeviceSocketLocalSource deviceSocketLocalSource,
                                   DeviceConnectContract.View deviceConnectView) {
@@ -43,6 +44,7 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
         mDeviceConnectView = deviceConnectView;
 
         mDeviceConnectView.setPresenter(this);
+
         initData();
     }
 
@@ -55,6 +57,7 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 
     @Override
     public void initData() {
+
 //        DeviceDescription deviceDescription = new DeviceLight(
 //                "LIGHT", "灯泡", 3, new String[]{"灯亮", "灯灭", "灯闪"},
 //                R.drawable.light, "ACTION"

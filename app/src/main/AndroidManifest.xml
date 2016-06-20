@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".addeventdevice.AddEventDeviceActivity"></activity>
+        <activity android:name=".bledeviceservice.BleDeviceServiceActivity"></activity>
 
     </application>
 

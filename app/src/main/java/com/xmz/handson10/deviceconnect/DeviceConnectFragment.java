@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -63,9 +64,10 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
     private FloatingActionButton fabOpenDrawer;
 
     private FloatingActionButton fabDone;
-    private int mSocketX;
 
-    private int mSocketY;
+//    private int mSocketX;
+//
+//    private int mSocketY;
 
     private int mConnectedTypeId;
 
@@ -202,8 +204,8 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
             } else {
                 Log.d(String.valueOf(deviceSocket.getSocketId()), "Picture ID" + " " + deviceSocket.getSocketId());
                 socketPic.setImageResource(deviceSocket.getPicSrcId());
-                Log.i("deviceSocket.getConnectedDeviceId", String.valueOf(deviceSocket.getConnectedDeviceId()));
-                if (flash_state){
+//                Log.i("deviceSocket.getConnectedDeviceId", String.valueOf(deviceSocket.getConnectedDeviceId()));
+                if (flash_state) {
                     flash(socketPic);
                 }
             }
@@ -249,10 +251,24 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
         int socketId;
         boolean isMove = false;
 
+        int mSocketX = 0;
+
+        int mSocketY = 0;
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int screenWidth = dm.widthPixels;
+        int screenHeight = dm.heightPixels;
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
 
-            if (!lock_state){
+            int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            v.measure(w, h);
+            int width = v.getMeasuredWidth();
+            int height = v.getMeasuredHeight();
+
+            if (!lock_state) {
                 socketId = ((DeviceSocket) v.getTag()).getSocketId();
                 final int X = (int) event.getRawX();
                 final int Y = (int) event.getRawY();
@@ -266,7 +282,25 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                         mSocketY = Y - layoutParams.topMargin;
                         return true;
                     case MotionEvent.ACTION_UP:
-                        mDeviceSocketListener.onSocketMove(socketId, X - mSocketX, Y - mSocketY);
+
+                        Log.d("layoutParams.topMargin", String.valueOf(layoutParams.topMargin));
+
+                        if (layoutParams.leftMargin < 10) {
+                            layoutParams.leftMargin = 10;
+                        }
+                        if (layoutParams.topMargin < 0) {
+                            Log.d("layoutParams.topMargin", String.valueOf(layoutParams.topMargin));
+                            layoutParams.topMargin = 0;
+                        }
+                        if (layoutParams.leftMargin > screenWidth - width - 10) {
+                            Log.d("layoutParams.leftMargin", String.valueOf(layoutParams.leftMargin));
+                            layoutParams.leftMargin = screenWidth - width - 10;
+                        }
+                        if (layoutParams.topMargin > screenHeight - 120 - height) {
+                            layoutParams.topMargin = screenHeight - 120 - height;
+                        }
+
+                        mDeviceSocketListener.onSocketMove(socketId, layoutParams.leftMargin, layoutParams.topMargin);
                         if (!isMove) {
                             Log.d("up", "is not move");
                             Log.d("socketId Click", String.valueOf(socketId));
@@ -277,8 +311,8 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                         isMove = true;
                         layoutParams.leftMargin = X - mSocketX;
                         layoutParams.topMargin = Y - mSocketY;
-                        layoutParams.rightMargin = -200;
-                        layoutParams.bottomMargin = -200;
+//                        layoutParams.rightMargin = -200;
+//                        layoutParams.bottomMargin = -200;
                         v.setLayoutParams(layoutParams);
                         break;
                 }
@@ -294,7 +328,7 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
-            if (!lock_state){
+            if (!lock_state) {
                 mDeviceSocket = (DeviceSocket) v.getTag();
                 switch (event.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:

@@ -11,8 +11,10 @@
         android:layout_height="@dimen/device_socket_comp"/>
 
     <TextView
+        android:gravity="center_horizontal"
         android:layout_width="@dimen/device_socket_comp"
         android:layout_height="wrap_content"
+
         android:background="@color/colorDeviceSocket"
         android:alpha="0.6"/>
 </LinearLayout>
