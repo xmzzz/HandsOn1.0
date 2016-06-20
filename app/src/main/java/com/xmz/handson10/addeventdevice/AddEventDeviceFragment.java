@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,7 +25,8 @@ import java.util.List;
 /**
  * Created by xmz on 2016/6/8.
  */
-public class AddEventDeviceFragment extends Fragment implements AddEventDeviceContract.View {
+public class AddEventDeviceFragment extends Fragment implements AddEventDeviceContract.View ,
+        PictureSelectorDialog.PictureSelectorInterface {
 
     private AddEventDeviceContract.Presenter mPresenter;  //
 
@@ -41,6 +43,8 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     private FloatingActionButton fabDeviceTrash;
 
     private int mNewEventDeviceTypeId;
+
+    private int mPictureSelectDeviceId;
 
     private AvailableEventDeviceTouchMoveListener mAvailableEventDeviceTouchMoveListener;
 
@@ -75,6 +79,12 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
         mContentFL = (FrameLayout) root.findViewById(R.id.contentFL);
 
         mContentFL.setOnDragListener(new AddEventDeviceOnDragListener());
+        mContentFL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.loadAvailableEventDevices();
+            }
+        });
 
         fabOpenDrawer =
                 (FloatingActionButton) root.findViewById(R.id.fab_open_drawer);
@@ -232,7 +242,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
                     viewWidth = X - layoutParams.leftMargin;
                     viewHeight = Y - layoutParams.topMargin;
 
-                    showAvailableEventDevicesWithTrash();
+                    processTrashEventStart(X, Y);
 
                     return true;
                 case MotionEvent.ACTION_UP:
@@ -308,11 +318,12 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
                 ImageView deviceLookIV = (ImageView) settingLL.getChildAt(0);
                 ImageView settingIV = (ImageView) settingLL.getChildAt(1);
                 deviceLookIV.setVisibility(View.VISIBLE);
+                deviceLookIV.setTag(deviceId);
                 settingIV.setVisibility(View.VISIBLE);
                 deviceLookIV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showEventDevicePicSelector();
+                        showEventDevicePicSelector((int)v.getTag());
                     }
                 });
                 settingIV.setOnClickListener(new View.OnClickListener() {
@@ -326,8 +337,17 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     }
 
     @Override
-    public void showEventDevicePicSelector() {
+    public void showEventDevicePicSelector(int deviceId) {
+        mPictureSelectDeviceId = deviceId;
+        PictureSelectorDialog pictureSelectorDialog = PictureSelectorDialog.getInstance(AddEventDeviceFragment.this);
+        pictureSelectorDialog.show(getActivity().getSupportFragmentManager(), "dialog");
+        Log.d("show", "selector");
+    }
 
+    @Override
+    public void onSelected(int picId) {
+
+        mPresenter.updateAvailableEventDevice(mPictureSelectDeviceId, picId);
     }
 
     public interface AvailableEventDeviceProcessor {

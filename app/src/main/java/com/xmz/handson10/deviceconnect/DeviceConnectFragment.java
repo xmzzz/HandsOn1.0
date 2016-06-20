@@ -202,7 +202,7 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
             } else {
                 Log.d(String.valueOf(deviceSocket.getSocketId()), "Picture ID" + " " + deviceSocket.getSocketId());
                 socketPic.setImageResource(deviceSocket.getPicSrcId());
-                Log.i("deviceSocket.getConnectedDeviceId", String.valueOf(deviceSocket.getConnectedDeviceId()));
+                Log.i("getConnectedDeviceId", String.valueOf(deviceSocket.getConnectedDeviceId()));
                 if (flash_state){
                     flash(socketPic);
                 }

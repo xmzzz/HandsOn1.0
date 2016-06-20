@@ -5,24 +5,23 @@
               android:layout_height="@dimen/available_event_device_height">
 
         <ImageView
-            android:layout_width="@dimen/available_event_device_width"
-            android:layout_height="@dimen/available_event_device_width"
+            android:layout_width="@dimen/available_event_device_picture"
+            android:layout_height="@dimen/available_event_device_picture"
+            android:layout_gravity="center_horizontal"
             />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/available_event_device_width"
             android:layout_height="@dimen/available_event_device_menu_height"
             android:orientation="horizontal">
             <ImageView
-                android:layout_width="@dimen/available_event_device_menu_height"
+                android:layout_width="@dimen/available_event_device_menu_width"
                 android:layout_height="@dimen/available_event_device_menu_height"
-                android:layout_marginLeft="2dp"
                 android:src="@drawable/look"
                 android:alpha="0.6"/>
             <ImageView
-                android:layout_width="@dimen/available_event_device_menu_height"
+                android:layout_width="@dimen/available_event_device_menu_width"
                 android:layout_height="@dimen/available_event_device_menu_height"
-                android:layout_marginLeft="2dp"
                 android:src="@drawable/setting"
                 android:alpha="0.6"/>
 

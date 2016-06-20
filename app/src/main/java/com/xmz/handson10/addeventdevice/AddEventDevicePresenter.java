@@ -146,4 +146,10 @@ public class AddEventDevicePresenter implements AddEventDeviceContract.Presenter
     public void loadEventDevicePicture() {
 
     }
+
+    @Override
+    public void updateAvailableEventDevice(int deviceId, int newPicId) {
+        mDeviceDescriptionLocalSource.updateAvailableEventDevicePicture(deviceId, newPicId);
+        loadAvailableEventDevices();
+    }
 }

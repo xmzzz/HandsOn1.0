@@ -24,7 +24,7 @@ public interface AddEventDeviceContract {
 
         void showInstructionEditor(int eventDeviceId);
 
-        void showEventDevicePicSelector();
+        void showEventDevicePicSelector(int deviceId);
 
         void showEventDevicesDrawer();
 
@@ -44,6 +44,8 @@ public interface AddEventDeviceContract {
         void addAvailableEventDevice(int deviceTypeId, int x, int y);
 
         void updateAvailableEventDevice(int deviceId, int x, int y);
+
+        void updateAvailableEventDevice(int deviceId, int newPicId);
 
         void deleteAvailableEventDevice(int eventDeviceId);
 
