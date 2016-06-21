@@ -3,6 +3,7 @@ package com.xmz.handson10.addeventdevice;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class PictureSelectorDialog extends DialogFragment {
         return pictureSelectorDialog;
     }
 
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mButtonOnClickListener = new ButtonOnClickListener();
         callbackListener = (PictureSelectorInterface) getArguments().getSerializable("pictureSelectorInterface");

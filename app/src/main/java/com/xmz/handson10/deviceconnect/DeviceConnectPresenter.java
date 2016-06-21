@@ -2,9 +2,13 @@ package com.xmz.handson10.deviceconnect;
 
 import android.util.Log;
 
+import com.xmz.handson10.R;
 import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
 import com.xmz.handson10.data.DeviceSocket;
+import com.xmz.handson10.data.devices.DeviceLight;
+import com.xmz.handson10.data.devices.DeviceMotor;
+import com.xmz.handson10.data.devices.EventButton;
 import com.xmz.handson10.data.source.DeviceDescriptionSource;
 import com.xmz.handson10.data.source.DeviceSocketSource;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionLocalSource;

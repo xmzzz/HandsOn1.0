@@ -1,18 +1,21 @@
 package com.xmz.handson10.addeventdevice;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.DragEvent;
-import android.util.Log;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,7 +29,7 @@ import java.util.List;
 /**
  * Created by xmz on 2016/6/8.
  */
-public class AddEventDeviceFragment extends Fragment implements AddEventDeviceContract.View {
+public class AddEventDeviceFragment extends Fragment implements AddEventDeviceContract.View, PictureSelectorDialog.PictureSelectorInterface{
 
     private AddEventDeviceContract.Presenter mPresenter;  //
 
@@ -35,6 +38,8 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     private LinearLayout mEventDeviceLL;
 
     private FrameLayout mContentFL;
+
+    private HorizontalScrollView horizontalScrollView;
 
     private FloatingActionButton fabStartPlayActivity;
 
@@ -74,6 +79,7 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.add_event_frag, container, false);
+        horizontalScrollView = (HorizontalScrollView) root.findViewById(R.id.horizontalScrollView);
         mDrawerLayout = (DrawerLayout) root.findViewById(R.id.drawer_layout_frag);
         mEventDeviceLL = (LinearLayout) root.findViewById(R.id.event_devices_linear_layout);
         mContentFL = (FrameLayout) root.findViewById(R.id.contentFL);
@@ -235,6 +241,10 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+
+            Rect outRect = new Rect();
+            getActivity().getWindow().findViewById(Window.ID_ANDROID_CONTENT).getDrawingRect(outRect);
+
             EventDevice eventDevice = (EventDevice) v.getTag();
             int deviceId = eventDevice.getDeviceId();
             int X = (int) event.getRawX();
@@ -271,10 +281,9 @@ public class AddEventDeviceFragment extends Fragment implements AddEventDeviceCo
                         Log.d("layoutParams.leftMargin", String.valueOf(layoutParams.leftMargin));
                         layoutParams.leftMargin = screenWidth - width;
                     }
-                    Log.d("layoutParams.topMargin", String.valueOf(layoutParams.topMargin));
-                    Log.d("layoutParams.topMargin2", String.valueOf(screenHeight - h_height - 100 - height));
-                    if (layoutParams.topMargin > screenHeight - h_height - 100 - height) {
-                        layoutParams.topMargin = screenHeight - h_height - 100 - height;
+                    if (layoutParams.topMargin > screenHeight - h_height - outRect.top - 1.4*height) {
+                        Log.d("outRect.top", String.valueOf(outRect));
+                        layoutParams.topMargin = (int) (screenHeight - h_height - outRect.top - 1.4*height);
                     }
 
                     mAvailableEventDeviceProcessor.onAvailableEventDeviceMove(deviceId, layoutParams.leftMargin, layoutParams.topMargin);

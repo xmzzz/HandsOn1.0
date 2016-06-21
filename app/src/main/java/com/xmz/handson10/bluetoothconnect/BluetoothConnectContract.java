@@ -1,4 +1,4 @@
-package com.xmz.handson10.bledeviceservice;
+package com.xmz.handson10.bluetoothconnect;
 
 import com.xmz.handson10.BasePresenter;
 import com.xmz.handson10.BaseView;
@@ -6,7 +6,7 @@ import com.xmz.handson10.BaseView;
 /**
  * Created by jinxu on 2016/6/20.
  */
-public interface BleDeviceServiceContract {
+public interface BluetoothConnectContract {
     interface View extends BaseView<Presenter>{
 
     }

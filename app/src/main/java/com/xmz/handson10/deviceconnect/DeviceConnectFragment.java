@@ -1,6 +1,7 @@
 package com.xmz.handson10.deviceconnect;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
@@ -102,7 +104,7 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
         switch (item.getItemId()) {
             case R.id.menu_lock:
                 lock_state = true;
-                toastMsg("界面已锁定");
+                toastMsg("界面已锁定 ");
                 break;
             case R.id.menu_unlock:
                 lock_state = false;
@@ -262,6 +264,10 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
         @Override
         public boolean onTouch(View v, MotionEvent event) {
 
+            Rect outRect = new Rect();
+            getActivity().getWindow().findViewById(Window.ID_ANDROID_CONTENT).getDrawingRect(outRect);
+
+
             int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             v.measure(w, h);
@@ -296,8 +302,8 @@ public class DeviceConnectFragment extends Fragment implements DeviceConnectCont
                             Log.d("layoutParams.leftMargin", String.valueOf(layoutParams.leftMargin));
                             layoutParams.leftMargin = screenWidth - width - 10;
                         }
-                        if (layoutParams.topMargin > screenHeight - 120 - height) {
-                            layoutParams.topMargin = screenHeight - 120 - height;
+                        if (layoutParams.topMargin > screenHeight - outRect.top - 2*height) {
+                            layoutParams.topMargin = (int) (screenHeight - outRect.top - 2*height);
                         }
 
                         mDeviceSocketListener.onSocketMove(socketId, layoutParams.leftMargin, layoutParams.topMargin);

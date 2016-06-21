@@ -1,4 +1,4 @@
-package com.xmz.handson10.bledeviceservice;
+package com.xmz.handson10.bluetoothconnect;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,16 +10,16 @@ import android.view.ViewGroup;
 /**
  * Created by jinxu on 2016/6/20.
  */
-public class BleDeviceServiceFragment extends Fragment implements BleDeviceServiceContract.View{
+public class BluetoothConnectFragment extends Fragment implements BluetoothConnectContract.View{
 
-    private BleDeviceServiceContract.Presenter mPresenter;
+    private BluetoothConnectContract.Presenter mPresenter;
 
-    public BleDeviceServiceFragment() {
+    public BluetoothConnectFragment() {
 
     }
 
-    public static BleDeviceServiceFragment newIntance(){
-        return new BleDeviceServiceFragment();
+    public static BluetoothConnectFragment newInstance(){
+        return new BluetoothConnectFragment();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class BleDeviceServiceFragment extends Fragment implements BleDeviceServi
     }
 
     @Override
-    public void setPresenter(BleDeviceServiceContract.Presenter presenter) {
+    public void setPresenter(BluetoothConnectContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
