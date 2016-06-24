@@ -6,6 +6,7 @@ import com.xmz.handson10.R;
 import com.xmz.handson10.data.DeviceAvailable;
 import com.xmz.handson10.data.DeviceDescription;
 import com.xmz.handson10.data.DeviceSocket;
+import com.xmz.handson10.data.River;
 import com.xmz.handson10.data.devices.DeviceLight;
 import com.xmz.handson10.data.devices.DeviceMotor;
 import com.xmz.handson10.data.devices.EventButton;
@@ -13,6 +14,7 @@ import com.xmz.handson10.data.source.DeviceDescriptionSource;
 import com.xmz.handson10.data.source.DeviceSocketSource;
 import com.xmz.handson10.data.source.devicedescription.DeviceDescriptionLocalSource;
 import com.xmz.handson10.data.source.devicesocket.DeviceSocketLocalSource;
+import com.xmz.handson10.util.RiverParser;
 
 import java.util.List;
 
@@ -35,6 +37,10 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 
     private DeviceDescription mDeviceDescription;
 
+    private static final String TAG = "XML";
+
+    private RiverParser parser;
+    private List<River> rivers;
 
     public DeviceConnectPresenter(DeviceDescriptionLocalSource deviceDescriptionLocalSource,
                                   DeviceSocketLocalSource deviceSocketLocalSource,
@@ -57,6 +63,37 @@ public class DeviceConnectPresenter implements DeviceConnectContract.Presenter,
 
     @Override
     public void initData() {
+
+//        try {
+//            String filename = "/sdcard/HandsOn1.0/resource/rivers.xml";
+//            InputStream is = new FileInputStream(filename);
+//
+//            parser = new PullRiverParser();
+//            rivers = parser.parse(is);
+//            for (River river : rivers) {
+////                Log.i(TAG,river.toString());
+//            }
+//
+//            is.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        String[] river_0 = rivers.get(0).toString().split(" ");
+//        String[] river_1 = rivers.get(1).toString().split(" ");
+//        String[] river_2 = rivers.get(2).toString().split(" ");
+//        DeviceDescription deviceDescription = new DeviceLight(river_0[0], river_0[1], Integer.valueOf(river_0[2]), new String[]{river_0[3], river_0[4], river_0[5]},
+//                Integer.valueOf(river_0[6]), river_0[7]);
+//        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
+//
+//        deviceDescription = new DeviceMotor(river_1[0],river_1[1],Integer.valueOf(river_1[2]),new String[]{river_1[3],river_1[4],river_1[5]},
+//                Integer.valueOf(river_1[6]),river_1[7]);
+//        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);
+//
+//        deviceDescription = new EventButton(river_2[0],river_2[1],Integer.valueOf(river_2[2]),new String[]{river_2[3],river_2[4],river_2[5]},
+//                Integer.valueOf(river_2[6]),river_2[7]);
+//        mDeviceDescriptionLocalSource.saveDeviceDescription(deviceDescription);*/
+        /************************************************************************************************************************/
 
 //        DeviceDescription deviceDescription = new DeviceLight(
 //                "LIGHT", "灯泡", 3, new String[]{"灯亮", "灯灭", "灯闪"},
